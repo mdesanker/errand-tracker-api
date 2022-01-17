@@ -4,6 +4,7 @@ const user = express.Router();
 const { check, validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const gravatar = require("gravatar");
 
 const User = require("../../models/User");
 
@@ -45,14 +46,21 @@ user.post("/register", [
           .json({ errors: [{ msg: "Email already associated with account" }] });
       }
 
+      // Generate gravatar
+      const avatar =
+        "https:" + gravatar.url(email, { s: "200", r: "pg", d: "monsterid" });
+
       // Create new user object
       user = new User({
         username,
         email,
+        avatar,
       });
 
       // Hash password
       user.password = await bcrypt.hash(password, 10);
+
+      console.log(user);
 
       // Save user in db
       await user.save();
