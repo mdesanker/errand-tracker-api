@@ -3,7 +3,7 @@ const express = require("express");
 const connectDB = require("./config/db");
 const cors = require("cors");
 
-const authRouter = require("./routes/api/auth");
+const userRouter = require("./routes/api/user");
 
 const app = express();
 
@@ -13,7 +13,7 @@ app.use(cors({ origin: [/\localhost/], credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use("/auth", authRouter);
+app.use("/api/user", userRouter);
 
 const PORT = process.env.PORT || 8000;
 
