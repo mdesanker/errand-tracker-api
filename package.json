@@ -4,6 +4,7 @@
   "description": "API for app to track errands",
   "main": "app.js",
   "scripts": {
+    "test": "jest",
     "start": "nodemon app.js",
     "serverstart": "DEBUG=errand-tracker-api:* npm start"
   },
@@ -18,7 +19,9 @@
   },
   "homepage": "https://github.com/mdesanker/errand-tracker-api#readme",
   "devDependencies": {
-    "nodemon": "^2.0.15"
+    "jest": "^27.4.7",
+    "nodemon": "^2.0.15",
+    "supertest": "^6.2.1"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

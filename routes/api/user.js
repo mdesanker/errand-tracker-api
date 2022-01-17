@@ -9,6 +9,13 @@ const gravatar = require("gravatar");
 const User = require("../../models/User");
 const auth = require("../../middleware/authMiddleware");
 
+// @route   GET /api/user/test
+// @desc    Test route testing
+// @access  Public
+user.get("/test", (req, res) => {
+  res.json({ msg: "Simple route to testing" });
+});
+
 // @route   GET /api/user/
 // @desc    Test route
 // @access  Public
