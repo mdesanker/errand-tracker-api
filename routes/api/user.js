@@ -12,8 +12,11 @@ const auth = require("../../middleware/authMiddleware");
 // @route   GET /api/user/test
 // @desc    Test route testing
 // @access  Public
-user.get("/test", (req, res) => {
-  res.json({ msg: "Simple route to testing" });
+user.post("/test", (req, res, next) => {
+  if (!req.body.username) {
+    return res.status(400).json({ errors: [{ msg: "Username is required" }] });
+  }
+  res.sendStatus(201);
 });
 
 // @route   GET /api/user/
