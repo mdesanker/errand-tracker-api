@@ -138,4 +138,8 @@ user.post("/login", [
   },
 ]);
 
+// @route   GET /api/user/detail
+// @desc    Get user data
+// @access  Private
+
 module.exports = user;
