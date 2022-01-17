@@ -7,6 +7,7 @@ const jwt = require("jsonwebtoken");
 const gravatar = require("gravatar");
 
 const User = require("../../models/User");
+const auth = require("../../middleware/authMiddleware");
 
 // @route   GET /api/user/
 // @desc    Test route
@@ -141,5 +142,14 @@ user.post("/login", [
 // @route   GET /api/user/detail
 // @desc    Get user data
 // @access  Private
+user.get("/detail", auth, async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.id).select("-password");
+    res.json(user);
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).send("Server error");
+  }
+});
 
 module.exports = user;
