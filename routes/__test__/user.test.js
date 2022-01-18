@@ -1,6 +1,23 @@
 const app = require("./app");
 const request = require("supertest");
+const mongoose = require("mongoose");
 
+// Connect to memory db
+require("../../config/mongoConfigTesting");
+// const initializeMongoServer = require("../../config/mongoConfigTesting");
+
+beforeAll(async () => {
+  // await initializeMongoServer();
+  console.log("BEFORE TESTS");
+});
+
+afterAll((done) => {
+  // Close db connection so jest exits
+  mongoose.connection.close();
+  done();
+});
+
+// Test routes
 describe("test user post route", () => {
   it("returns status 201 if username passed", async () => {
     const res = await request(app)
