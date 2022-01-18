@@ -34,7 +34,7 @@ describe.skip("POST /api/errand/test", () => {
   });
 });
 
-// Test errand creation
+// Errand create
 describe("POST /api/errand/create", () => {
   it("create errand", async () => {
     const res = await request(app)
@@ -58,5 +58,15 @@ describe("POST /api/errand/create", () => {
     expect(res.statusCode).toEqual(400);
     expect(res.body).toHaveProperty("errors");
     expect(res.body.errors[0].msg).toEqual("Title is required");
+  });
+});
+
+// Errand reading
+describe("errand read end points", () => {
+  it("success GET /api/errand/all", async () => {
+    const res = await request(app).get("/api/errand/all");
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).arrayContaining(expect.anything());
   });
 });
