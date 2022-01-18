@@ -33,3 +33,20 @@ describe("GET /api/errand/test", () => {
     expect(res.statusCode).toEqual(201);
   });
 });
+
+// Test errand creation
+describe("POST /api/errand/create", () => {
+  it("create errand", async () => {
+    const res = await request(app)
+      .post("/api/errand/create")
+      .set("x-auth-token", token)
+      .send({
+        title: "Errand title",
+        author: "",
+      });
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toHaveProperty("title");
+    expect(res.body).toHaveProperty("author");
+  });
+});
