@@ -41,12 +41,22 @@ describe("POST /api/errand/create", () => {
       .post("/api/errand/create")
       .set("x-auth-token", token)
       .send({
-        title: "Errand title",
-        author: "",
+        title: "Sample title",
       });
 
     expect(res.statusCode).toEqual(200);
     expect(res.body).toHaveProperty("title");
     expect(res.body).toHaveProperty("author");
+  });
+
+  it("error creating errand missing required title", async () => {
+    const res = await request(app)
+      .post("/api/errand/create")
+      .set("x-auth-token", token)
+      .send({});
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toHaveProperty("errors");
+    expect(res.body.errors[0].msg).toEqual("Title is required");
   });
 });
