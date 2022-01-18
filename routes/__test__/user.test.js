@@ -3,11 +3,13 @@ const request = require("supertest");
 const mongoose = require("mongoose");
 
 // Connect to memory db
-// require("../../config/mongoConfigTesting");
 const initializeMongoServer = require("../../config/mongoConfigTesting");
+
+const seedDB = require("./seed");
 
 beforeAll(async () => {
   await initializeMongoServer();
+  await seedDB();
 });
 
 afterAll(() => {

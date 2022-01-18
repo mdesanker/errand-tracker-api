@@ -1,4 +1,4 @@
-const faker = require("faker");
+var faker = require("@faker-js/faker");
 
 const User = require("../../models/User");
 
@@ -31,3 +31,27 @@ const generateUser = () => {
   });
   users.push(user);
 };
+
+const seedDB = async () => {
+  // Generate specific user
+  generateSpecificUser();
+
+  // Generate 3 random users
+  for (let i = 0; i < 3; i++) {
+    generateUser();
+  }
+
+  // Save to db
+  for (user of users) {
+    try {
+      await user.save();
+    } catch (err) {
+      err;
+    }
+  }
+
+  console.log(users);
+  return { users };
+};
+
+module.exports = seedDB;
