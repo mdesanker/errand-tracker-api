@@ -1,8 +1,8 @@
-var faker = require("@faker-js/faker");
+require("dotenv").config();
+const faker = require("@faker-js/faker");
+const bcrypt = require("bcryptjs");
 
 const User = require("../../models/User");
-
-// TODO: How to seed mongodb memory server
 
 const users = [];
 const projects = [];
@@ -13,7 +13,7 @@ const generateSpecificUser = () => {
   const user = new User({
     username: "Greg",
     email: "greg@example.com",
-    password: "password",
+    password: "$2a$10$ijwz5joIBRc/.GSoOoYqtu3hxWu7AJSjlAUJapiEMunrtDe2Kme8m",
     avatar: "",
     friends: [],
   });
@@ -50,7 +50,7 @@ const seedDB = async () => {
     }
   }
 
-  console.log(users);
+  console.log(users[0]);
   return { users };
 };
 

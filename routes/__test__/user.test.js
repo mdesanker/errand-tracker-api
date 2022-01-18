@@ -81,3 +81,19 @@ describe("POST /api/user/register", () => {
     );
   });
 });
+
+// User login route
+describe("POST /api/user/login", () => {
+  it("successful login", async () => {
+    const user = {
+      email: "greg@example.com",
+      password: "password",
+    };
+
+    const res = await request(app).post("/api/user/login").send(user);
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toHaveProperty("token");
+    expect(res.body.token).toEqual(expect.anything());
+  });
+});

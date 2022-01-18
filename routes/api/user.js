@@ -47,10 +47,12 @@ user.post("/register", [
     }
 
     const { username, email, password } = req.body;
+    console.log("REQ", req.body);
 
     try {
       // Check whether account exists with email
       let user = await User.findOne({ email });
+      console.log("USER", user);
 
       if (user) {
         return res
@@ -141,7 +143,7 @@ user.post("/login", [
 
       jwt.sign(payload, process.env.KEY, { expiresIn: "24h" }, (err, token) => {
         if (err) throw new Error(err);
-        res.json({ token });
+        res.status(200).json({ token });
       });
     } catch (err) {
       console.error(err.message);
