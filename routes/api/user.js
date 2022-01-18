@@ -13,7 +13,6 @@ const auth = require("../../middleware/authMiddleware");
 // @desc    Test route testing
 // @access  Public
 user.post("/test", (req, res, next) => {
-  console.log(req.body);
   if (!req.body.username) {
     return res.status(400).json({ errors: [{ msg: "Username is required" }] });
   }

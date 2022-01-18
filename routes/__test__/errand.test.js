@@ -24,7 +24,7 @@ afterAll(() => {
 });
 
 // Errand test route
-describe("GET /api/errand/test", () => {
+describe.skip("POST /api/errand/test", () => {
   it("errand test route", async () => {
     const res = await request(app)
       .post("/api/errand/test")
