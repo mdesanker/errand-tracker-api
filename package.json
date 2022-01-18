@@ -4,7 +4,7 @@
   "description": "API for app to track errands",
   "main": "app.js",
   "scripts": {
-    "test": "jest",
+    "test": "cross-env NODE_ENV=test jest --testTimeout=10000 --detectOpenHandles --forceExit",
     "start": "nodemon app.js",
     "serverstart": "DEBUG=errand-tracker-api:* npm start"
   },
@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/mdesanker/errand-tracker-api#readme",
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "jest": "^27.4.7",
     "mongodb-memory-server": "^8.2.0",
     "nodemon": "^2.0.15",

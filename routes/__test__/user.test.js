@@ -3,18 +3,17 @@ const request = require("supertest");
 const mongoose = require("mongoose");
 
 // Connect to memory db
-require("../../config/mongoConfigTesting");
-// const initializeMongoServer = require("../../config/mongoConfigTesting");
+// require("../../config/mongoConfigTesting");
+const initializeMongoServer = require("../../config/mongoConfigTesting");
 
 beforeAll(async () => {
-  // await initializeMongoServer();
-  console.log("BEFORE TESTS");
+  await initializeMongoServer();
 });
 
-afterAll((done) => {
+afterAll(() => {
   // Close db connection so jest exits
   mongoose.connection.close();
-  done();
+  // done();
 });
 
 // Test routes
@@ -32,5 +31,22 @@ describe("test user post route", () => {
 
     expect(res.statusCode).toEqual(400);
     expect(res.body).toEqual({ errors: [{ msg: "Username is required" }] });
+  });
+});
+
+// User registration route
+describe("POST /api/user/register", () => {
+  it("returns status of 200 for success user creation", async () => {
+    const user = {
+      username: "JDoe",
+      email: "jdoe@gmail.com",
+      password: "password",
+    };
+
+    const res = await await request(app).post("/api/user/register").send(user);
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toHaveProperty("token");
+    expect(res.body.token).toEqual(expect.anything());
   });
 });
