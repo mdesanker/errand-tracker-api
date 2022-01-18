@@ -64,9 +64,12 @@ describe("POST /api/errand/create", () => {
 // Errand reading
 describe("errand read end points", () => {
   it("success GET /api/errand/all", async () => {
-    const res = await request(app).get("/api/errand/all");
+    const res = await request(app)
+      .get("/api/errand/all")
+      .set("x-auth-token", token);
 
     expect(res.statusCode).toEqual(200);
-    expect(res.body).arrayContaining(expect.anything());
+    expect(res.body[0]).toHaveProperty("title");
+    expect(res.body[0]).toHaveProperty("author");
   });
 });

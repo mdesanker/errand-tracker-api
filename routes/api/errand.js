@@ -35,7 +35,7 @@ errand.post("/create", auth, [
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      console.log(errors.array());
+      // console.log(errors.array());
       return res.status(400).json({ errors: errors.array() });
     }
 
@@ -57,7 +57,7 @@ errand.post("/create", auth, [
       // Save errand to db
       await errand.save();
 
-      console.log(errand);
+      // console.log(errand);
       res.json(errand);
     } catch (err) {
       console.error(err.message);
@@ -65,5 +65,21 @@ errand.post("/create", auth, [
     }
   },
 ]);
+
+// @route   GET /api/errand/all
+// @desc    Return all errands
+// @access  Private
+errand.get("/all", auth, async (req, res, next) => {
+  try {
+    const errands = await Errand.find({})
+      .sort({ date: "asc" })
+      .populate("author");
+
+    res.json(errands);
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).send("Server error");
+  }
+});
 
 module.exports = errand;
