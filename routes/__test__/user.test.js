@@ -15,7 +15,6 @@ beforeAll(async () => {
 afterAll(() => {
   // Close db connection so jest exits
   mongoose.connection.close();
-  // done();
 });
 
 // Test routes
@@ -120,5 +119,31 @@ describe("POST /api/user/login", () => {
     expect(res.statusCode).toEqual(400);
     expect(res.body).toHaveProperty("errors");
     expect(res.body.errors[0].msg).toEqual("Email is required");
+  });
+});
+
+// Logged in user detail route
+describe("GET /api/user/detail", () => {
+  it("return user details", async () => {
+    // Generate token
+    const login = await request(app).post("/api/user/login").send({
+      email: "greg@example.com",
+      password: "password",
+    });
+    console.log(login.body);
+    const token = login.body.token;
+
+    // Request user detail with token
+    const res = await request(app)
+      .get("/api/user/detail")
+      .set("x-auth-token", token);
+    // console.log(res.body);
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toHaveProperty("username");
+    expect(res.body.username).toEqual("Greg");
+    expect(res.body).toHaveProperty("email");
+    expect(res.body).toHaveProperty("avatar");
+    expect(res.body).not.toHaveProperty("password");
   });
 });

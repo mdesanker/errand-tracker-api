@@ -1,6 +1,5 @@
 require("dotenv").config();
 const faker = require("@faker-js/faker");
-const bcrypt = require("bcryptjs");
 
 const User = require("../../models/User");
 
@@ -50,7 +49,7 @@ const seedDB = async () => {
     }
   }
 
-  console.log(users[0]);
+  // console.log(users[0]);
   return { users };
 };
 

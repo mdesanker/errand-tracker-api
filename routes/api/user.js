@@ -47,12 +47,10 @@ user.post("/register", [
     }
 
     const { username, email, password } = req.body;
-    console.log("REQ", req.body);
 
     try {
       // Check whether account exists with email
       let user = await User.findOne({ email });
-      console.log("USER", user);
 
       if (user) {
         return res
@@ -153,7 +151,7 @@ user.post("/login", [
 ]);
 
 // @route   GET /api/user/detail
-// @desc    Get user data
+// @desc    Get logged in user data
 // @access  Private
 user.get("/detail", auth, async (req, res, next) => {
   try {
