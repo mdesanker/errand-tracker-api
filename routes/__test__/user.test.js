@@ -36,17 +36,30 @@ describe("test user post route", () => {
 
 // User registration route
 describe("POST /api/user/register", () => {
-  it("returns status of 200 for success user creation", async () => {
+  it("successful user creation", async () => {
     const user = {
       username: "JDoe",
       email: "jdoe@gmail.com",
       password: "password",
     };
 
-    const res = await await request(app).post("/api/user/register").send(user);
+    const res = await request(app).post("/api/user/register").send(user);
 
     expect(res.statusCode).toEqual(200);
     expect(res.body).toHaveProperty("token");
     expect(res.body.token).toEqual(expect.anything());
+  });
+
+  it("missing input in user registration", async () => {
+    const user = {
+      email: "jdoe@gmail.com",
+      password: "password",
+    };
+
+    const res = await request(app).post("/api/user/register").send(user);
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toHaveProperty("errors");
+    expect(res.body.errors[0].msg).toEqual("Username is required");
   });
 });
