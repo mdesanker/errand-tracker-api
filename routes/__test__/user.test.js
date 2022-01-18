@@ -96,4 +96,29 @@ describe("POST /api/user/login", () => {
     expect(res.body).toHaveProperty("token");
     expect(res.body.token).toEqual(expect.anything());
   });
+
+  it("failed login - invalid credentials", async () => {
+    const user = {
+      email: "greg@example.com",
+      password: "password1",
+    };
+
+    const res = await request(app).post("/api/user/login").send(user);
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toHaveProperty("errors");
+    expect(res.body.errors[0].msg).toEqual("Invalid credentials");
+  });
+
+  it("failed login - email missing", async () => {
+    const user = {
+      password: "password1",
+    };
+
+    const res = await request(app).post("/api/user/login").send(user);
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toHaveProperty("errors");
+    expect(res.body.errors[0].msg).toEqual("Email is required");
+  });
 });
