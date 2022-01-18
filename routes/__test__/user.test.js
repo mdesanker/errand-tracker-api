@@ -1,10 +1,7 @@
 const app = require("./app");
 const request = require("supertest");
 const mongoose = require("mongoose");
-
-// Connect to memory db
 const initializeMongoServer = require("../../config/mongoConfigTesting");
-
 const seedDB = require("./seed");
 
 beforeAll(async () => {
@@ -130,14 +127,12 @@ describe("GET /api/user/detail", () => {
       email: "greg@example.com",
       password: "password",
     });
-    console.log(login.body);
     const token = login.body.token;
 
     // Request user detail with token
     const res = await request(app)
       .get("/api/user/detail")
       .set("x-auth-token", token);
-    // console.log(res.body);
 
     expect(res.statusCode).toEqual(200);
     expect(res.body).toHaveProperty("username");
