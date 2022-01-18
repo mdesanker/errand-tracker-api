@@ -4,9 +4,18 @@ const mongoose = require("mongoose");
 const initializeMongoServer = require("../../config/mongoConfigTesting");
 const seedDB = require("./seed");
 
+let token;
+
 beforeAll(async () => {
   await initializeMongoServer();
   await seedDB();
+
+  // Generate token
+  const login = await request(app).post("/api/user/login").send({
+    email: "greg@example.com",
+    password: "password",
+  });
+  token = login.body.token;
 });
 
 afterAll(() => {
@@ -122,14 +131,6 @@ describe("POST /api/user/login", () => {
 // Logged in user detail route
 describe("GET /api/user/detail", () => {
   it("return user details", async () => {
-    // Generate token
-    const login = await request(app).post("/api/user/login").send({
-      email: "greg@example.com",
-      password: "password",
-    });
-    const token = login.body.token;
-
-    // Request user detail with token
     const res = await request(app)
       .get("/api/user/detail")
       .set("x-auth-token", token);

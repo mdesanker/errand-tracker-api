@@ -4,9 +4,18 @@ const mongoose = require("mongoose");
 const initializeMongoServer = require("../../config/mongoConfigTesting");
 const seedDB = require("./seed");
 
+let token;
+
 beforeAll(async () => {
   await initializeMongoServer();
   await seedDB();
+
+  // Generate token
+  const login = await request(app).post("/api/user/login").send({
+    email: "greg@example.com",
+    password: "password",
+  });
+  token = login.body.token;
 });
 
 afterAll(() => {
@@ -14,9 +23,9 @@ afterAll(() => {
   mongoose.connection.close();
 });
 
-// Test errand test POST route
+// Errand test route
 describe("GET /api/errand/test", () => {
-  it.only("errand test route", async () => {
+  it("errand test route", async () => {
     const res = await request(app)
       .post("/api/errand/test")
       .send({ username: "Michael" });
