@@ -64,4 +64,20 @@ describe("POST /api/user/register", () => {
     expect(res.body).toHaveProperty("errors");
     expect(res.body.errors[0].msg).toEqual("Username is required");
   });
+
+  it("user already exists with email", async () => {
+    const user = {
+      username: "Greg",
+      email: "greg@example.com",
+      password: "password",
+    };
+
+    const res = await request(app).post("/api/user/register").send(user);
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toHaveProperty("errors");
+    expect(res.body.errors[0].msg).toEqual(
+      "Email already associated with account"
+    );
+  });
 });
