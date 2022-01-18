@@ -2,6 +2,7 @@ require("dotenv").config();
 const faker = require("@faker-js/faker");
 
 const User = require("../../models/User");
+const Errand = require("../../models/Errand");
 
 const users = [];
 const projects = [];
@@ -31,13 +32,42 @@ const generateUser = () => {
   users.push(user);
 };
 
-const seedDB = async () => {
-  // Generate specific user
-  generateSpecificUser();
+// Generate specific errand
+const generateSpecificErrand = () => {
+  const errand = new Errand({
+    title: "Pick up diapers",
+    description: "CVS has a sale on pampers pure",
+    author: "61e71828c9cb2005247017c7",
+    priority: "High",
+    _id: "61e71a80f0f8833ac7d5201d",
+  });
+  errands.push(errand);
+};
 
-  // Generate 3 random users
+// Generate faker errand
+const generateErrand = () => {
+  const priorities = ["None", "Low", "Medium", "High"];
+
+  const random = Math.floor(Math.random() * priorities.length);
+
+  const errand = new Errand({
+    title: faker.lorem.words(2),
+    description: faker.lorem.sentence(),
+    author: "61e71828c9cb2005247017c7",
+    priority: priorities[random],
+  });
+  errands.push(errand);
+};
+
+const seedDB = async () => {
+  // Generate specifics
+  generateSpecificUser();
+  generateSpecificErrand();
+
+  // Generate 3 randoms
   for (let i = 0; i < 3; i++) {
     generateUser();
+    generateErrand();
   }
 
   // Save to db
@@ -49,7 +79,16 @@ const seedDB = async () => {
     }
   }
 
+  for (errand of errands) {
+    try {
+      await errand.save();
+    } catch (err) {
+      err;
+    }
+  }
+
   // console.log(users[0]);
+  console.log(errands);
   return { users };
 };
 

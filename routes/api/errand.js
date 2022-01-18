@@ -30,7 +30,7 @@ errand.post("/create", auth, [
 
   // Process input
   async (req, res, next) => {
-    console.log(req.user);
+    // console.log(req.user.id);
 
     const errors = validationResult(req);
 
@@ -56,7 +56,7 @@ errand.post("/create", auth, [
       // Save errand to db
       await errand.save();
 
-      console.log(errand);
+      // console.log(errand);
       res.json(errand);
     } catch (err) {
       console.error(err.message);
