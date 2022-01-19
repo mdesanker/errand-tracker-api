@@ -205,3 +205,41 @@ describe("PUT /api/errand/:id/update", () => {
     expect(res.body.errors[0].msg).toEqual("Invalid errandid");
   });
 });
+
+describe("DELETE /api/errand/:id/delete", () => {
+  it("error if not errand author", async () => {
+    const res = await request(app)
+      .delete(`/app/errand/${errandid}/delete`)
+      .set("x-auth-token", secondToken);
+
+    expect(res.statusCode).toEqual(401);
+    expect(res.body).toHaveProperty("errors");
+    expect(res.body.errors[0].msg).toEqual("Invalid credentials");
+  });
+
+  it("delete errand by id", async () => {
+    const res = await request(app)
+      .delete(`/app/errand/${errandid}/delete`)
+      .set("x-auth-token", token);
+
+    // Find deleted errand should return error
+    const findErrand = await request(app)
+      .get(`/app/errand/${errandid}`)
+      .set("x-auth-token", token);
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body.msg).toEqual("Errand deleted");
+    expect(findErrand.statusCode).toEqual(400);
+    expect(findErrand.body.errors[0].msg).toEqual("Invalid errandid");
+  });
+
+  it("error if not invalid errand id", async () => {
+    const res = await request(app)
+      .delete(`/app/errand/${invalidErrandid}/delete`)
+      .set("x-auth-token", token);
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toHaveProperty("errors");
+    expect(res.body.errors[0].msg).toEqual("Invalid errandid");
+  });
+});
