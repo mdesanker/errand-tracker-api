@@ -23,6 +23,13 @@ beforeAll(async () => {
     password: "password",
   });
   token = login.body.token;
+
+  // Generate second token
+  const secondLogin = await request(app).post("/api/user/login").send({
+    email: "gretta@example.net",
+    password: "password",
+  });
+  secondToken = secondLogin.body.token;
 });
 
 afterAll(() => {
