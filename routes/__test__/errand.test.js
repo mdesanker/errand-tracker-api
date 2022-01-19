@@ -5,10 +5,13 @@ const initializeMongoServer = require("../../config/mongoConfigTesting");
 const seedDB = require("./seed");
 
 let token;
+let secondToken;
 let userid = "61e71828c9cb2005247017c7";
 let invalidUserid = "0000000000cb200524701123";
 let projectid = "61e7dd93ecec03286743e04e";
 let invalidProjectid = "00000093ecec03286743e04e";
+let errandid = "61e71a80f0f8833ac7d5201d";
+let invalidErrandid;
 
 beforeAll(async () => {
   await initializeMongoServer();
@@ -119,5 +122,57 @@ describe("GET /api/errand/project/:projectid", () => {
     expect(res.statusCode).toEqual(400);
     expect(res.body).toHaveProperty("errors");
     expect(res.body.errors[0].msg).toEqual("Invalid projectid");
+  });
+});
+
+describe("PUT /api/errand/update/:id", () => {
+  it("update title and description for specific errand", async () => {
+    const newErrand = {
+      title: "New title",
+      description: "This is an updated description",
+    };
+
+    const res = await request(app)
+      .put(`/api/errand/update/${errandid}`)
+      .set("x-auth-token", token)
+      .send(newErrand);
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toHaveProperty("title");
+    expect(res.body.title).toEqual("New title");
+    expect(res.body).toHaveProperty("author");
+    expect(res.body.description).toEqual("This is an updated description");
+  });
+
+  it("error if user not author of errand", async () => {
+    const newErrand = {
+      title: "New title",
+      description: "This is an updated description",
+    };
+
+    const res = await request(app)
+      .put(`/api/errand/update/${errandid}`)
+      .set("x-auth-token", secondToken)
+      .send(newErrand);
+
+    expect(res.statusCode).toEqual(401);
+    expect(res.body).toHaveProperty("errors");
+    expect(res.body.errors[0].msg).toEqual("Invalid credentials");
+  });
+
+  it("error if errand not found", async () => {
+    const newErrand = {
+      title: "New title",
+      description: "This is an updated description",
+    };
+
+    const res = await request(app)
+      .put(`/api/errand/update/${invalidErrandid}`)
+      .set("x-auth-token", token)
+      .send(newErrand);
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toHaveProperty("errors");
+    expect(res.body.errors[0].msg).toEqual("Invalid errandid");
   });
 });
