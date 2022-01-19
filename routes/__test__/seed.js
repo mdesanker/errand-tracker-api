@@ -132,7 +132,7 @@ const seedDB = async () => {
 
   // console.log(users[1]);
   // console.log(projects);
-  // console.log(errands);
+  console.log(errands[0]);
   return { users, projects, errands };
 };
 

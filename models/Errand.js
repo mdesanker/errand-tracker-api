@@ -13,6 +13,7 @@ const ErrandSchema = new Schema({
     default: "None",
   },
   project: { type: Schema.Types.ObjectId, ref: "Project" },
+  isComplete: { type: Boolean, default: false },
 });
 
 module.exports = mongoose.model("Errand", ErrandSchema);
