@@ -5,6 +5,8 @@ const initializeMongoServer = require("../../config/mongoConfigTesting");
 const seedDB = require("./seed");
 
 let token;
+let userid = "61e71828c9cb2005247017c7";
+let invalidUserid = "0000000000cb200524701123";
 let projectid = "61e7dd93ecec03286743e04e";
 let invalidProjectid = "00000093ecec03286743e04e";
 
@@ -76,12 +78,11 @@ describe("GET /api/errand/all", () => {
   });
 });
 
-describe("GET /api/errand/userid", () => {
+describe("GET /api/errand/user/:userid", () => {
   it("return errands for specific user", async () => {
     const res = await request(app)
-      .get("/api/errand/userid")
-      .set("x-auth-token", token)
-      .send({ id: "61e71828c9cb2005247017c7" });
+      .get(`/api/errand/user/${userid}`)
+      .set("x-auth-token", token);
 
     expect(res.statusCode).toEqual(200);
     expect(res.body[0]).toHaveProperty("title");
@@ -90,9 +91,8 @@ describe("GET /api/errand/userid", () => {
 
   it("return error for invalid userid", async () => {
     const res = await request(app)
-      .get("/api/errand/userid")
-      .set("x-auth-token", token)
-      .send({ id: "0000000000cb200524701123" });
+      .get(`/api/errand/user/${invalidUserid}`)
+      .set("x-auth-token", token);
 
     expect(res.statusCode).toEqual(400);
     expect(res.body).toHaveProperty("errors");
@@ -100,10 +100,10 @@ describe("GET /api/errand/userid", () => {
   });
 });
 
-describe("GET /api/errand/:projectid", () => {
+describe("GET /api/errand/project/:projectid", () => {
   it("return errands for specific project", async () => {
     const res = await request(app)
-      .get(`/api/errand/61e7dd93ecec03286743e04e`)
+      .get(`/api/errand/project/${projectid}`)
       .set("x-auth-token", token);
 
     expect(res.statusCode).toEqual(200);
@@ -113,7 +113,7 @@ describe("GET /api/errand/:projectid", () => {
 
   it("return error for invalid id", async () => {
     const res = await request(app)
-      .get(`/api/errand/${invalidProjectid}`)
+      .get(`/api/errand/project/${invalidProjectid}`)
       .set("x-auth-token", token);
 
     expect(res.statusCode).toEqual(400);

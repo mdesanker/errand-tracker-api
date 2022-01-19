@@ -83,23 +83,22 @@ errand.get("/all", auth, async (req, res, next) => {
   }
 });
 
-// @route   GET /api/errand/userid
+// @route   GET /api/errand/user/:userid
 // @desc    Return errands for specific user
 // @access  Private
-errand.get("/userid", auth, async (req, res, next) => {
-  const author = req.body.id;
-  // console.log("ID", author);
+errand.get("/user/:userid", auth, async (req, res, next) => {
+  const { userid } = req.params;
 
   try {
     // Check user exists
-    const user = await User.findById(author);
+    const user = await User.findById(userid);
 
     if (!user) {
       return res.status(400).json({ errors: [{ msg: "Invalid userid" }] });
     }
 
     // Find user's errands
-    const errands = await Errand.find({ author })
+    const errands = await Errand.find({ author: userid })
       .sort({ date: "asc" })
       .populate("author");
 
@@ -110,10 +109,10 @@ errand.get("/userid", auth, async (req, res, next) => {
   }
 });
 
-// @route   GET /api/errand/:projectid
+// @route   GET /api/errand/project/:projectid
 // @desc    Return errands for specific project
 // @access  Private
-errand.get("/:projectid", async (req, res, next) => {
+errand.get("/project/:projectid", async (req, res, next) => {
   const { projectid } = req.params;
 
   try {
