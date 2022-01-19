@@ -130,7 +130,7 @@ const seedDB = async () => {
     }
   }
 
-  console.log(users[1]);
+  // console.log(users[1]);
   // console.log(projects);
   // console.log(errands);
   return { users, projects, errands };

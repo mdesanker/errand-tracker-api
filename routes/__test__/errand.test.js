@@ -11,7 +11,7 @@ let invalidUserid = "0000000000cb200524701123";
 let projectid = "61e7dd93ecec03286743e04e";
 let invalidProjectid = "00000093ecec03286743e04e";
 let errandid = "61e71a80f0f8833ac7d5201d";
-let invalidErrandid;
+let invalidErrandid = "00000080f0f8833ac7d5201d";
 
 beforeAll(async () => {
   await initializeMongoServer();
@@ -132,7 +132,7 @@ describe("GET /api/errand/project/:projectid", () => {
   });
 });
 
-describe("PUT /api/errand/update/:id", () => {
+describe("PUT /api/errand/:id/update", () => {
   it("update title and description for specific errand", async () => {
     const newErrand = {
       title: "New title",
@@ -140,7 +140,7 @@ describe("PUT /api/errand/update/:id", () => {
     };
 
     const res = await request(app)
-      .put(`/api/errand/update/${errandid}`)
+      .put(`/api/errand/${errandid}/update`)
       .set("x-auth-token", token)
       .send(newErrand);
 
@@ -158,7 +158,7 @@ describe("PUT /api/errand/update/:id", () => {
     };
 
     const res = await request(app)
-      .put(`/api/errand/update/${errandid}`)
+      .put(`/api/errand/${errandid}/update`)
       .set("x-auth-token", secondToken)
       .send(newErrand);
 
@@ -174,7 +174,7 @@ describe("PUT /api/errand/update/:id", () => {
     };
 
     const res = await request(app)
-      .put(`/api/errand/update/${invalidErrandid}`)
+      .put(`/api/errand/${invalidErrandid}/update`)
       .set("x-auth-token", token)
       .send(newErrand);
 

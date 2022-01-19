@@ -135,4 +135,71 @@ errand.get("/project/:projectid", async (req, res, next) => {
   }
 });
 
+// @route   PUT /api/errand/update/:id
+// @desc    Update specific errand
+// @access  Private
+errand.put("/:id/update", auth, [
+  // Validate and sanitize input
+  check("title", "Title is required").trim().notEmpty(),
+  check("description").trim(),
+  check("dueDate").trim(),
+  check("priority").trim(),
+  check("project").trim(),
+
+  // Process input
+  async (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+      const { title, description, dueDate, priority, project } = req.body;
+      const { id } = req.params;
+
+      // Find errand
+      const errand = await Errand.findById(id).populate("author");
+
+      if (!errand) {
+        return res.status(400).json({ errors: [{ msg: "Invalid errandid" }] });
+      }
+
+      // Check errand belongs to user
+      if (!(req.user.id === errand.author.id)) {
+        return res
+          .status(401)
+          .json({ errors: [{ msg: "Invalid credentials" }] });
+      }
+
+      // Create new errand object
+      const newErrand = new Errand({
+        title,
+        author: req.user.id,
+        description,
+        dueDate,
+        priority,
+        project,
+        _id: id,
+      });
+
+      // Handle empty priority
+      priority
+        ? (newErrand.priority = priority)
+        : (newErrand.priority = "None");
+
+      // Find errand and update
+      const update = await Errand.findByIdAndUpdate(id, newErrand, {
+        new: true,
+      });
+
+      console.log(update);
+      res.json(update);
+    } catch (err) {
+      console.error(err.message);
+      return res.status(500).send("Server error");
+    }
+  },
+]);
+
 module.exports = errand;
