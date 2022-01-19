@@ -5,6 +5,8 @@ const initializeMongoServer = require("../../config/mongoConfigTesting");
 const seedDB = require("./seed");
 
 let token;
+let projectid;
+let invalidProjectid;
 
 beforeAll(async () => {
   await initializeMongoServer();
@@ -95,5 +97,27 @@ describe("GET /api/errand/userid", () => {
     expect(res.statusCode).toEqual(400);
     expect(res.body).toHaveProperty("errors");
     expect(res.body.errors[0].msg).toEqual("Invalid userid");
+  });
+});
+
+describe("GET /api/errand/projectid/:id", () => {
+  it("return errands for specific project", async () => {
+    const res = await request(app)
+      .get(`/api/errand/projectid/${projectid}`)
+      .set("x-auth-token", token);
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body[0]).toHaveProperty("title");
+    expect(res.body[0]).toHaveProperty("author");
+  });
+
+  it("return error for invalid id", async () => {
+    const res = await request(app)
+      .get(`/api/errand/projectid/${invalidProjectid}`)
+      .set("x-auth-token", token);
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toHaveProperty("errors");
+    expect(res.body.errors[0].msg).toEqual("Invalid projectid");
   });
 });
