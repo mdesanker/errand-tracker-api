@@ -5,6 +5,7 @@ const cors = require("cors");
 
 const userRouter = require("./routes/api/user");
 const errandRouter = require("./routes/api/errand");
+const projectRouter = require("./routes/api/project");
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use("/api/user", userRouter);
 app.use("/api/errand", errandRouter);
+app.use("/api/project", projectRouter);
 
 const PORT = process.env.PORT || 8000;
 
