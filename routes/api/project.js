@@ -36,4 +36,30 @@ project.get("/all", auth, async (req, res, next) => {
   }
 });
 
+// @route   GET /api/project/:userid
+// @desc    Get projects for user
+// @access  Private
+project.get("/:userid", auth, async (req, res, next) => {
+  const { userid } = req.params;
+
+  try {
+    // Check user exists
+    const user = await User.findById(userid);
+
+    if (!user) {
+      return res.status(400).json({ errors: [{ msg: "Invalid userid" }] });
+    }
+
+    //  Get projects
+    const projects = await Project.find({ author: userid }).sort({
+      date: "asc",
+    });
+
+    res.json(projects);
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).send("Server error");
+  }
+});
+
 module.exports = project;
