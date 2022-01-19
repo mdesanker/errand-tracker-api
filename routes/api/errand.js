@@ -87,7 +87,6 @@ errand.get("/all", auth, async (req, res, next) => {
 // @desc    Return all errands
 // @access  Private
 errand.get("/:id", auth, async (req, res, next) => {
-  console.log("FIND ERRAND BY ID");
   const { id } = req.params;
 
   try {
@@ -221,5 +220,34 @@ errand.put("/:id/update", auth, [
     }
   },
 ]);
+
+// @route   DELETE /api/errand/:id/delete
+// @desc    Delete specific errand
+// @access  Private
+errand.delete("/:id/delete", auth, async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    // Check that errand exists
+    const errand = await Errand.findById(id).populate("author");
+
+    if (!errand) {
+      return res.status(400).json({ errors: [{ msg: "Invalid errandid" }] });
+    }
+
+    // Check user is author
+    if (!(req.user.id === errand.author.id)) {
+      return res.status(401).json({ errors: [{ msg: "Invalid credentials" }] });
+    }
+
+    // Delete errand
+    await Errand.findByIdAndDelete(id);
+
+    res.json({ msg: "Errand deleted" });
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).send("Server error");
+  }
+});
 
 module.exports = errand;

@@ -209,7 +209,7 @@ describe("PUT /api/errand/:id/update", () => {
 describe("DELETE /api/errand/:id/delete", () => {
   it("error if not errand author", async () => {
     const res = await request(app)
-      .delete(`/app/errand/${errandid}/delete`)
+      .delete(`/api/errand/${errandid}/delete`)
       .set("x-auth-token", secondToken);
 
     expect(res.statusCode).toEqual(401);
@@ -219,12 +219,12 @@ describe("DELETE /api/errand/:id/delete", () => {
 
   it("delete errand by id", async () => {
     const res = await request(app)
-      .delete(`/app/errand/${errandid}/delete`)
+      .delete(`/api/errand/${errandid}/delete`)
       .set("x-auth-token", token);
 
     // Find deleted errand should return error
     const findErrand = await request(app)
-      .get(`/app/errand/${errandid}`)
+      .get(`/api/errand/${errandid}`)
       .set("x-auth-token", token);
 
     expect(res.statusCode).toEqual(200);
@@ -233,9 +233,9 @@ describe("DELETE /api/errand/:id/delete", () => {
     expect(findErrand.body.errors[0].msg).toEqual("Invalid errandid");
   });
 
-  it("error if not invalid errand id", async () => {
+  it("error if invalid errand id", async () => {
     const res = await request(app)
-      .delete(`/app/errand/${invalidErrandid}/delete`)
+      .delete(`/api/errand/${invalidErrandid}/delete`)
       .set("x-auth-token", token);
 
     expect(res.statusCode).toEqual(400);
