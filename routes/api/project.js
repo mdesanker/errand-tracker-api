@@ -28,7 +28,6 @@ project.get("/all", auth, async (req, res, next) => {
       .sort({ date: "asc" })
       .populate("author");
 
-    console.log(projects);
     res.json(projects);
   } catch (err) {
     console.error(err.message);
@@ -81,5 +80,43 @@ project.get("/:id", auth, async (req, res, next) => {
     return res.status(500).send("Server error");
   }
 });
+
+// @route   POST /api/project/create
+// @desc    Create project
+// @access  Private
+project.post("/create", auth, [
+  // Validate and sanitize input
+  check("title", "Title is required").trim().notEmpty(),
+  check("description").trim(),
+
+  // Process input
+  async (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+      const { title, description } = req.body;
+
+      // Create new project
+      const project = new Project({
+        title,
+        author: req.user.id,
+        description,
+      });
+
+      // Save project
+      await project.save();
+
+      console.log(project);
+      res.json(project);
+    } catch (err) {
+      console.error(err.message);
+      return res.status(500).send("Server error");
+    }
+  },
+]);
 
 module.exports = project;
