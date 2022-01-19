@@ -83,6 +83,27 @@ errand.get("/all", auth, async (req, res, next) => {
   }
 });
 
+// @route   GET /api/errand/:id
+// @desc    Return all errands
+// @access  Private
+errand.get("/:id", auth, async (req, res, next) => {
+  console.log("FIND ERRAND BY ID");
+  const { id } = req.params;
+
+  try {
+    const errand = await Errand.findById(id).populate("author project");
+
+    if (!errand) {
+      return res.status(400).json({ errors: [{ msg: "Invalid errandid" }] });
+    }
+
+    res.json(errand);
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).send("Server error");
+  }
+});
+
 // @route   GET /api/errand/user/:userid
 // @desc    Return errands for specific user
 // @access  Private
@@ -193,7 +214,6 @@ errand.put("/:id/update", auth, [
         new: true,
       });
 
-      console.log(update);
       res.json(update);
     } catch (err) {
       console.error(err.message);

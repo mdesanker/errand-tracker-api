@@ -106,7 +106,7 @@ describe("GET /api/errand/:id", () => {
 
     expect(res.statusCode).toEqual(400);
     expect(res.body).toHaveProperty("errors");
-    expect(res.body.errors[0].msg).toHaveProperty("Invalid errandid");
+    expect(res.body.errors[0].msg).toEqual("Invalid errandid");
   });
 });
 
