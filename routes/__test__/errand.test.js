@@ -88,6 +88,28 @@ describe("GET /api/errand/all", () => {
   });
 });
 
+describe("GET /api/errand/:id", () => {
+  it("return errand by id", async () => {
+    const res = await request(app)
+      .get(`/api/errand/${errandid}`)
+      .set("x-auth-token", token);
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toHaveProperty("title");
+    expect(res.body).toHaveProperty("author");
+  });
+
+  it("return errand by id", async () => {
+    const res = await request(app)
+      .get(`/api/errand/${invalidErrandid}`)
+      .set("x-auth-token", token);
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toHaveProperty("errors");
+    expect(res.body.errors[0].msg).toHaveProperty("Invalid errandid");
+  });
+});
+
 describe("GET /api/errand/user/:userid", () => {
   it("return errands for specific user", async () => {
     const res = await request(app)
