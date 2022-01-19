@@ -5,8 +5,8 @@ const initializeMongoServer = require("../../config/mongoConfigTesting");
 const seedDB = require("./seed");
 
 let token;
-let projectid;
-let invalidProjectid;
+let projectid = "61e7dd93ecec03286743e04e";
+let invalidProjectid = "00000093ecec03286743e04e";
 
 beforeAll(async () => {
   await initializeMongoServer();
@@ -100,10 +100,10 @@ describe("GET /api/errand/userid", () => {
   });
 });
 
-describe("GET /api/errand/projectid/:id", () => {
+describe("GET /api/errand/:projectid", () => {
   it("return errands for specific project", async () => {
     const res = await request(app)
-      .get(`/api/errand/projectid/${projectid}`)
+      .get(`/api/errand/61e7dd93ecec03286743e04e`)
       .set("x-auth-token", token);
 
     expect(res.statusCode).toEqual(200);
@@ -113,7 +113,7 @@ describe("GET /api/errand/projectid/:id", () => {
 
   it("return error for invalid id", async () => {
     const res = await request(app)
-      .get(`/api/errand/projectid/${invalidProjectid}`)
+      .get(`/api/errand/${invalidProjectid}`)
       .set("x-auth-token", token);
 
     expect(res.statusCode).toEqual(400);

@@ -5,6 +5,7 @@ const { check, validationResult } = require("express-validator");
 const auth = require("../../middleware/authMiddleware");
 const Errand = require("../../models/Errand");
 const User = require("../../models/User");
+const Project = require("../../models/Project");
 
 // @route   POST /api/errand/test
 // @desc    Test route testing
@@ -87,7 +88,7 @@ errand.get("/all", auth, async (req, res, next) => {
 // @access  Private
 errand.get("/userid", auth, async (req, res, next) => {
   const author = req.body.id;
-  console.log("ID", author);
+  // console.log("ID", author);
 
   try {
     // Check user exists
@@ -102,6 +103,33 @@ errand.get("/userid", auth, async (req, res, next) => {
       .sort({ date: "asc" })
       .populate("author");
 
+    return res.json(errands);
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).send("Server error");
+  }
+});
+
+// @route   GET /api/errand/:projectid
+// @desc    Return errands for specific project
+// @access  Private
+errand.get("/:projectid", async (req, res, next) => {
+  const { projectid } = req.params;
+
+  try {
+    // Check project exists
+    const project = await Project.findById(projectid);
+
+    if (!project) {
+      return res.status(400).json({ errors: [{ msg: "Invalid projectid" }] });
+    }
+
+    // Return errands for project
+    const errands = await Errand.find({ project: projectid })
+      .sort({ date: "asc" })
+      .populate("author project");
+
+    console.log(errands);
     return res.json(errands);
   } catch (err) {
     console.error(err.message);

@@ -99,6 +99,15 @@ const seedDB = async () => {
     }
   }
 
+  // Save projects to db
+  for (project of projects) {
+    try {
+      await project.save();
+    } catch (err) {
+      err;
+    }
+  }
+
   // Save errands to db
   for (errand of errands) {
     try {
