@@ -3,6 +3,7 @@ const faker = require("@faker-js/faker");
 
 const User = require("../../models/User");
 const Errand = require("../../models/Errand");
+const Project = require("../../models/Project");
 
 const users = [];
 const projects = [];
@@ -33,6 +34,17 @@ const generateUser = () => {
   users.push(user);
 };
 
+// Generate specific project
+const generateSpecificProject = () => {
+  const project = new Project({
+    title: "Shopping List",
+    author: users[0]._id, // Greg owns project
+    description: faker.lorem.sentence(),
+    _id: "61e7dd93ecec03286743e04e",
+  });
+  projects.push(project);
+};
+
 // Generate specific errand
 const generateSpecificErrand = () => {
   const errand = new Errand({
@@ -40,6 +52,7 @@ const generateSpecificErrand = () => {
     description: faker.lorem.sentence(),
     author: "61e71828c9cb2005247017c7",
     priority: "High",
+    project: "61e7dd93ecec03286743e04e",
     _id: "61e71a80f0f8833ac7d5201d",
   });
   errands.push(errand);
@@ -59,11 +72,11 @@ const generateErrand = (authorId) => {
   });
   errands.push(errand);
 };
-
 const seedDB = async () => {
   // Generate specifics
   generateSpecificUser();
-  // generateSpecificErrand();
+  generateSpecificProject();
+  generateSpecificErrand();
 
   // Generate 3 randoms
   for (let i = 0; i < 3; i++) {
@@ -96,8 +109,9 @@ const seedDB = async () => {
   }
 
   // console.log(users[0]);
+  // console.log(projects);
   // console.log(errands);
-  return { users };
+  return { users, projects, errands };
 };
 
 module.exports = seedDB;
