@@ -155,7 +155,7 @@ errand.get("/project/:projectid", async (req, res, next) => {
   }
 });
 
-// @route   PUT /api/errand/update/:id
+// @route   PUT /api/errand/:id/update
 // @desc    Update specific errand
 // @access  Private
 errand.put("/:id/update", auth, [
@@ -220,6 +220,40 @@ errand.put("/:id/update", auth, [
     }
   },
 ]);
+
+// @route   PUT /api/errand/:id/toggle
+// @desc    Toggle isComplete for specific errand
+// @access  Private
+errand.put("/:id/toggle", auth, async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    // Check errand exists
+    const errand = await Errand.findById(id).populate("author");
+
+    if (!errand) {
+      return res.status(400).json({ errors: [{ msg: "Invalid errandid" }] });
+    }
+
+    // Check user is author
+    if (!(req.user.id === errand.author.id)) {
+      return res.status(401).json({ errors: [{ msg: "Invalid credentials" }] });
+    }
+
+    // Update errand
+    const newErrand = await Errand.findByIdAndUpdate(
+      id,
+      { isComplete: true },
+      { new: true }
+    );
+
+    console.log(newErrand);
+    res.json(newErrand);
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).send("Server error");
+  }
+});
 
 // @route   DELETE /api/errand/:id/delete
 // @desc    Delete specific errand
