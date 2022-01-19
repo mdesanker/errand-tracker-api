@@ -61,10 +61,10 @@ describe("GET /api/project/all", () => {
   });
 });
 
-describe("GET /api/project/:userid", () => {
+describe("GET /api/project/user/:userid", () => {
   it("return error for invalid user id", async () => {
     const res = await request(app)
-      .get(`/api/project/${userid}`)
+      .get(`/api/project/user/${userid}`)
       .set("x-auth-token", token);
 
     expect(res.statusCode).toEqual(200);
@@ -73,7 +73,7 @@ describe("GET /api/project/:userid", () => {
 
   it("return all projects for specific user", async () => {
     const res = await request(app)
-      .get(`/api/project/${invalidUserid}`)
+      .get(`/api/project/user/${invalidUserid}`)
       .set("x-auth-token", token);
 
     expect(res.statusCode).toEqual(400);

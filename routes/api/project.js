@@ -36,10 +36,10 @@ project.get("/all", auth, async (req, res, next) => {
   }
 });
 
-// @route   GET /api/project/:userid
+// @route   GET /api/project/user/:userid
 // @desc    Get projects for user
 // @access  Private
-project.get("/:userid", auth, async (req, res, next) => {
+project.get("/user/:userid", auth, async (req, res, next) => {
   const { userid } = req.params;
 
   try {
@@ -56,6 +56,26 @@ project.get("/:userid", auth, async (req, res, next) => {
     });
 
     res.json(projects);
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).send("Server error");
+  }
+});
+
+// @route   GET /api/project/:id
+// @desc    Get project by id
+// @access  Private
+project.get("/:id", auth, async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    const project = await Project.findById(id);
+
+    if (!project) {
+      return res.status(400).json({ errors: [{ msg: "Invalid projectid" }] });
+    }
+
+    res.json(project);
   } catch (err) {
     console.error(err.message);
     return res.status(500).send("Server error");
