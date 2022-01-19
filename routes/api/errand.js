@@ -128,7 +128,6 @@ errand.get("/project/:projectid", async (req, res, next) => {
       .sort({ date: "asc" })
       .populate("author project");
 
-    console.log(errands);
     return res.json(errands);
   } catch (err) {
     console.error(err.message);
