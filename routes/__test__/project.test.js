@@ -9,6 +9,8 @@ let token;
 let secondToken;
 let userid = "61e71828c9cb2005247017c7";
 let invalidUserid = "0000000000cb200524701123";
+let projectid = "61e7dd93ecec03286743e04e";
+let invalidProjectid = "00000093ecec03286743e04e";
 
 // Test preparations
 beforeAll(async () => {
@@ -77,5 +79,28 @@ describe("GET /api/project/:userid", () => {
     expect(res.statusCode).toEqual(400);
     expect(res.body).toHaveProperty("errors");
     expect(res.body.errors[0].msg).toEqual("Invalid userid");
+  });
+});
+
+describe("GET /api/project/:id", () => {
+  it("return project by id", async () => {
+    const res = await request(app)
+      .get(`/api/project/${projectid}`)
+      .set("x-auth-token", token);
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toHaveProperty("title");
+    expect(res.body.title).toEqual("Shopping List");
+    expect(res.body).toHaveProperty("description");
+  });
+
+  it("return error if incorrect project id", async () => {
+    const res = await request(app)
+      .get(`/api/project/${invalidProjectid}`)
+      .set("x-auth-token", token);
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toHaveProperty("errors");
+    expect(res.body.errors[0].msg).toEqual("Invalid projectid");
   });
 });
