@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const initializeMongoServer = require("../../config/mongoConfigTesting");
 const seedDB = require("./seed");
 
+// Global variables
 let token;
 let secondToken;
 let userid = "61e71828c9cb2005247017c7";
@@ -13,6 +14,7 @@ let invalidProjectid = "00000093ecec03286743e04e";
 let errandid = "61e71a80f0f8833ac7d5201d";
 let invalidErrandid = "00000080f0f8833ac7d5201d";
 
+// Test preparations
 beforeAll(async () => {
   await initializeMongoServer();
   await seedDB();
@@ -37,7 +39,7 @@ afterAll(() => {
   mongoose.connection.close();
 });
 
-// Errand test route
+// Test
 describe.skip("POST /api/errand/test", () => {
   it("errand test route", async () => {
     const res = await request(app)
@@ -48,7 +50,7 @@ describe.skip("POST /api/errand/test", () => {
   });
 });
 
-// Errand create
+// Errand POST routes
 describe("POST /api/errand/create", () => {
   it("create errand", async () => {
     const res = await request(app)
@@ -75,7 +77,7 @@ describe("POST /api/errand/create", () => {
   });
 });
 
-// Errand reading
+// Errand GET routes
 describe("GET /api/errand/all", () => {
   it("return all errands in db", async () => {
     const res = await request(app)
@@ -154,6 +156,7 @@ describe("GET /api/errand/project/:projectid", () => {
   });
 });
 
+// Errand PUT routes
 describe("PUT /api/errand/:id/update", () => {
   it("update title and description for specific errand", async () => {
     const newErrand = {
@@ -238,6 +241,7 @@ describe("PUT /api/errand/:id/toggle", () => {
   });
 });
 
+// Errand DELETE routes
 describe("DELETE /api/errand/:id/delete", () => {
   it("error if not errand author", async () => {
     const res = await request(app)

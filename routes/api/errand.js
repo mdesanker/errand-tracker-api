@@ -3,6 +3,7 @@ const errand = express.Router();
 const { check, validationResult } = require("express-validator");
 
 const auth = require("../../middleware/authMiddleware");
+
 const Errand = require("../../models/Errand");
 const User = require("../../models/User");
 const Project = require("../../models/Project");
@@ -247,7 +248,6 @@ errand.put("/:id/toggle", auth, async (req, res, next) => {
       { new: true }
     );
 
-    console.log(newErrand);
     res.json(newErrand);
   } catch (err) {
     console.error(err.message);
