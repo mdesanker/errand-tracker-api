@@ -104,3 +104,29 @@ describe("GET /api/project/:id", () => {
     expect(res.body.errors[0].msg).toEqual("Invalid projectid");
   });
 });
+
+// Project POST routes
+describe("POST /api/project/create", () => {
+  it("return created project", async () => {
+    const res = await request(app)
+      .post("/api/project/create")
+      .set("x-auth-token", token)
+      .send({ title: "Project title" });
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toHaveProperty("title");
+    expect(res.body.title).toEqual("Project title");
+    expect(res.body).toHaveProperty("author");
+  });
+
+  it("return error if no title", async () => {
+    const res = await request(app)
+      .post("/api/project/create")
+      .set("x-auth-token", token)
+      .send({});
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toHaveProperty("errors");
+    expect(res.body.errors[0].msg).toEqual("Title is required");
+  });
+});
