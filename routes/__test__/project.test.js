@@ -47,7 +47,9 @@ describe("POST /api/project/test", () => {
 // Project GET routes
 describe("GET /api/project/all", () => {
   it("return all projects", async () => {
-    const res = request(app).get("/api/project/all").set("x-auth-token", token);
+    const res = await request(app)
+      .get("/api/project/all")
+      .set("x-auth-token", token);
 
     expect(res.statusCode).toEqual(200);
     expect(res.body[0]).toHaveProperty("title");
