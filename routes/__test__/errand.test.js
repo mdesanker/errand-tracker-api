@@ -206,6 +206,38 @@ describe("PUT /api/errand/:id/update", () => {
   });
 });
 
+describe("PUT /api/errand/:id/toggle", () => {
+  it("set isComplete to true on specific errand", async () => {
+    const res = await request(app)
+      .put(`/api/errand/${errandid}/toggle`)
+      .set("x-auth-token", token);
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toHaveProperty("isComplete");
+    expect(res.body.isComplete).toBe(true);
+  });
+
+  it("return error if not errand author", async () => {
+    const res = await request(app)
+      .put(`/api/errand/${errandid}/toggle`)
+      .set("x-auth-token", secondToken);
+
+    expect(res.statusCode).toEqual(401);
+    expect(res.body).toHaveProperty("errors");
+    expect(res.body.errors[0].msg).toEqual("Invalid credentials");
+  });
+
+  it("return error if invalid errand id", async () => {
+    const res = await request(app)
+      .put(`/api/errand/${invalidErrandid}/toggle`)
+      .set("x-auth-token", token);
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toHaveProperty("errors");
+    expect(res.body.errors[0].msg).toEqual("Invalid errandid");
+  });
+});
+
 describe("DELETE /api/errand/:id/delete", () => {
   it("error if not errand author", async () => {
     const res = await request(app)
