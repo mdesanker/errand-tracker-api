@@ -96,7 +96,7 @@ const seedDB = async () => {
   }
 
   // console.log(users[0]);
-  console.log(errands);
+  // console.log(errands);
   return { users };
 };
 

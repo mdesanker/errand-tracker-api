@@ -74,12 +74,12 @@ describe("GET /api/errand/all", () => {
   });
 });
 
-describe("GET /api/errand/:userid", () => {
+describe("GET /api/errand/userid", () => {
   it("return errands for specific user", async () => {
     const res = await request(app)
-      .get("/api/errand/:userid")
+      .get("/api/errand/userid")
       .set("x-auth-token", token)
-      .send({ id: "61e71a80f0f8833ac7d5201d" });
+      .send({ id: "61e71828c9cb2005247017c7" });
 
     expect(res.statusCode).toEqual(200);
     expect(res.body[0]).toHaveProperty("title");
@@ -88,12 +88,12 @@ describe("GET /api/errand/:userid", () => {
 
   it("return error for invalid userid", async () => {
     const res = await request(app)
-      .get("/api/errand/:userid")
+      .get("/api/errand/userid")
       .set("x-auth-token", token)
-      .send({ id: "invalidUserId" });
+      .send({ id: "0000000000cb200524701123" });
 
     expect(res.statusCode).toEqual(400);
     expect(res.body).toHaveProperty("errors");
-    expect(res.body.errors[0]).toEqual("Invalid user id");
+    expect(res.body.errors[0].msg).toEqual("Invalid userid");
   });
 });
