@@ -7,6 +7,8 @@ const seedDB = require("./seed");
 // Global variables
 let token;
 let secondToken;
+let userid = "61e71828c9cb2005247017c7";
+let invalidUserid = "0000000000cb200524701123";
 
 // Test preparations
 beforeAll(async () => {
@@ -54,5 +56,26 @@ describe("GET /api/project/all", () => {
     expect(res.statusCode).toEqual(200);
     expect(res.body[0]).toHaveProperty("title");
     expect(res.body[0]).toHaveProperty("author");
+  });
+});
+
+describe("GET /api/project/:userid", () => {
+  it("return error for invalid user id", async () => {
+    const res = await request(app)
+      .get(`/api/project/${userid}`)
+      .set("x-auth-token", token);
+
+    expect(res.statusCode).toEqual(200);
+    expect(Array.isArray(res.body)).toBe(true);
+  });
+
+  it("return all projects for specific user", async () => {
+    const res = await request(app)
+      .get(`/api/project/${invalidUserid}`)
+      .set("x-auth-token", token);
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toHaveProperty("errors");
+    expect(res.body.errors[0].msg).toEqual("Invalid userid");
   });
 });
