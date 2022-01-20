@@ -196,7 +196,7 @@ describe("PUT /api/project/:id/addmember", () => {
     const res = await request(app)
       .put(`/api/project/${projectid}/addmember`)
       .set("x-auth-token", token)
-      .send({ id: "61e7ec186394874272d11e67" });
+      .send({ userid: "61e7ec186394874272d11e67" });
 
     expect(res.statusCode).toEqual(200);
     expect(res.body).toHaveProperty("members");
@@ -207,7 +207,7 @@ describe("PUT /api/project/:id/addmember", () => {
     const res = await request(app)
       .put(`/api/project/${invalidProjectid}/addmember`)
       .set("x-auth-token", token)
-      .send({ id: "61e7ec186394874272d11e67" });
+      .send({ userid: "61e7ec186394874272d11e67" });
 
     expect(res.statusCode).toEqual(400);
     expect(res.body).toHaveProperty("errors");
@@ -218,7 +218,7 @@ describe("PUT /api/project/:id/addmember", () => {
     const res = await request(app)
       .put(`/api/project/${projectid}/addmember`)
       .set("x-auth-token", token)
-      .send({ id: "61e7ec186394874272d11e67" });
+      .send({ userid: "61e7ec186394874272d11e67" });
 
     expect(res.statusCode).toEqual(400);
     expect(res.body).toHaveProperty("errors");
@@ -229,9 +229,9 @@ describe("PUT /api/project/:id/addmember", () => {
     const res = await request(app)
       .put(`/api/project/${projectid}/addmember`)
       .set("x-auth-token", secondToken)
-      .send({ id: "61e7ec186394874272d11e67" });
+      .send({ userid: "61e7ec186394874272d11e67" });
 
-    expect(res.statusCode).toEqual(400);
+    expect(res.statusCode).toEqual(401);
     expect(res.body).toHaveProperty("errors");
     expect(res.body.errors[0].msg).toEqual("Invalid credentials");
   });

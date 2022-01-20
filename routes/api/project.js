@@ -175,4 +175,48 @@ project.put("/:id/update", auth, [
   },
 ]);
 
+// @route   PUT /api/project/:id/addmember
+// @desc    Add member to project
+// @access  Private
+project.put("/:id/addmember", auth, async (req, res, next) => {
+  const { id } = req.params;
+  const { userid } = req.body;
+
+  try {
+    // Check project exists
+    const project = await Project.findById(id).populate("author");
+
+    if (!project) {
+      return res.status(400).json({ errors: [{ msg: "Invalid project id" }] });
+    }
+
+    // Check user is author
+    if (!(req.user.id === project.author.id)) {
+      return res.status(401).json({ errors: [{ msg: "Invalid credentials" }] });
+    }
+
+    // Check invited user not already a member
+    if (project.members.includes(userid)) {
+      return res
+        .status(400)
+        .json({ errors: [{ msg: "User already a member" }] });
+    }
+
+    // Append new member to list
+    const members = project.members.concat([userid]);
+
+    // Add userid to project members
+    const update = await Project.findByIdAndUpdate(
+      id,
+      { members },
+      { new: true }
+    );
+
+    res.json(update);
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).send("Server error");
+  }
+});
+
 module.exports = project;
