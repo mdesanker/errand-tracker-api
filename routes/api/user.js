@@ -19,13 +19,6 @@ user.post("/test", (req, res, next) => {
   res.sendStatus(201);
 });
 
-// @route   GET /api/user/
-// @desc    Test route
-// @access  Public
-user.get("/", (req, res) => {
-  res.json({ msg: "Test route" });
-});
-
 // @route   POST /api/user/register
 // @desc    Register new user
 // @access  Public
@@ -155,6 +148,28 @@ user.post("/login", [
 user.get("/detail", auth, async (req, res, next) => {
   try {
     const user = await User.findById(req.user.id).select("-password");
+    res.json(user);
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).send("Server error");
+  }
+});
+
+// @route   GET /api/user/:id
+// @desc    Get user by id
+// @access  Private
+user.get("/:id", auth, async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    // Check user id is valid
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(400).json({ errors: [{ msg: "Invalid user id" }] });
+    }
+
+    // Return user object
     res.json(user);
   } catch (err) {
     console.error(err.message);

@@ -167,7 +167,7 @@ describe("GET /api/user/:id", () => {
   it("return details for user id", async () => {
     const res = await request(app)
       .get(`/api/user/${grettaUserId}`)
-      .set("x-auth-token", token);
+      .set("x-auth-token", gregToken);
 
     expect(res.statusCode).toEqual(200);
     expect(res.body).toHaveProperty("username");
@@ -177,11 +177,11 @@ describe("GET /api/user/:id", () => {
   it("error for invalid user id", async () => {
     const res = await request(app)
       .get(`/api/user/${invalidUserId}`)
-      .set("x-auth-token", token);
+      .set("x-auth-token", gregToken);
 
     expect(res.statusCode).toEqual(400);
     expect(res.body).toHaveProperty("errors");
-    expect(res.body.errors[0].msg).toHaveProperty("Invalid user id");
+    expect(res.body.errors[0].msg).toEqual("Invalid user id");
   });
 });
 
