@@ -8,6 +8,7 @@ const seedDB = require("./seed");
 let gregToken;
 let grettaToken;
 const gregUserId = "61e71828c9cb2005247017c7";
+const grettaUserId = "61e7ec186394874272d11e67";
 const invalidUserId = "0000000000cb200524701123";
 const gregProjectId = "61e7dd93ecec03286743e04e";
 const gregAndGrettaProjectId = "61e7dd93ecec03286743e04a";
@@ -17,7 +18,9 @@ const gregErrandId = "61e71a80f0f8833ac7d5201d";
 const gregAndGrettaErrandId = "61e71a80f0f8833ac7d5201e";
 const invalidErrandId = "00000080f0f8833ac7d5201d";
 
-// Test preparations
+////////////////////////////////////////
+/* PREPARATION */
+////////////////////////////////////////
 beforeAll(async () => {
   await initializeMongoServer();
   await seedDB();

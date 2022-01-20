@@ -4,18 +4,32 @@ const mongoose = require("mongoose");
 const initializeMongoServer = require("../../config/mongoConfigTesting");
 const seedDB = require("./seed");
 
-let token;
+let gregToken;
+let grettaToken;
+const gregUserId = "61e71828c9cb2005247017c7";
+const grettaUserId = "61e7ec186394874272d11e67";
+const invalidUserId = "0000000000cb200524701123";
 
+////////////////////////////////////////
+/* PREPARATION */
+////////////////////////////////////////
 beforeAll(async () => {
   await initializeMongoServer();
   await seedDB();
 
   // Generate token
-  const login = await request(app).post("/api/user/login").send({
+  const gregLogin = await request(app).post("/api/user/login").send({
     email: "greg@example.com",
     password: "password",
   });
-  token = login.body.token;
+  gregToken = gregLogin.body.token;
+
+  // Generate second token
+  const grettaLogin = await request(app).post("/api/user/login").send({
+    email: "gretta@example.net",
+    password: "password",
+  });
+  grettaToken = grettaLogin.body.token;
 });
 
 afterAll(() => {
@@ -41,7 +55,9 @@ describe("test user post route", () => {
   });
 });
 
-// User registration route
+////////////////////////////////////////
+/* USER REGISTRATION */
+////////////////////////////////////////
 describe("POST /api/user/register", () => {
   it("successful user creation", async () => {
     const user = {
@@ -87,7 +103,9 @@ describe("POST /api/user/register", () => {
   });
 });
 
-// User login route
+////////////////////////////////////////
+/* USER LOGIN */
+////////////////////////////////////////
 describe("POST /api/user/login", () => {
   it("successful login", async () => {
     const user = {
@@ -128,18 +146,45 @@ describe("POST /api/user/login", () => {
   });
 });
 
-// Logged in user detail route
+////////////////////////////////////////
+/* USER DETAIL ROUTE */
+////////////////////////////////////////
 describe("GET /api/user/detail", () => {
-  it("return user details", async () => {
+  it("return current user details", async () => {
     const res = await request(app)
       .get("/api/user/detail")
-      .set("x-auth-token", token);
+      .set("x-auth-token", gregToken);
 
     expect(res.statusCode).toEqual(200);
     expect(res.body).toHaveProperty("username");
     expect(res.body.username).toEqual("Greg");
     expect(res.body).toHaveProperty("email");
-    expect(res.body).toHaveProperty("avatar");
     expect(res.body).not.toHaveProperty("password");
   });
 });
+
+describe("GET /api/user/:id", () => {
+  it("return details for user id", async () => {
+    const res = await request(app)
+      .get(`/api/user/${grettaUserId}`)
+      .set("x-auth-token", token);
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toHaveProperty("username");
+    expect(res.body).toHaveProperty("email");
+  });
+
+  it("error for invalid user id", async () => {
+    const res = await request(app)
+      .get(`/api/user/${invalidUserId}`)
+      .set("x-auth-token", token);
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toHaveProperty("errors");
+    expect(res.body.errors[0].msg).toHaveProperty("Invalid user id");
+  });
+});
+
+////////////////////////////////////////
+/* USER FRIEND REQUEST ROUTES */
+////////////////////////////////////////
