@@ -293,16 +293,29 @@ errand.delete("/:id/delete", auth, async (req, res, next) => {
 
   try {
     // Check that errand exists
-    const errand = await Errand.findById(id).populate("author");
+    const errand = await Errand.findById(id).populate("author project");
 
     if (!errand) {
       return res.status(400).json({ errors: [{ msg: "Invalid errand id" }] });
     }
 
+    // Check user is member
+    let isMember = false;
+
+    if (errand.project) {
+      const parentProject = await Project.findById(errand.project.id).populate(
+        "members"
+      );
+
+      isMember =
+        parentProject.members.filter((member) => member.id === req.user.id)
+          .length !== 0;
+    }
+
     // Check user is author
     const isAuthor = req.user.id === errand.author.id;
 
-    if (!isAuthor) {
+    if (!isAuthor && !isMember) {
       return res.status(401).json({ errors: [{ msg: "Invalid credentials" }] });
     }
 

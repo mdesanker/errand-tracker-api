@@ -281,7 +281,7 @@ describe("PUT /api/errand/:id/toggle", () => {
 ////////////////////////////////////////
 /* ERRAND DELETE ROUTES */
 ////////////////////////////////////////
-describe.only("DELETE /api/errand/:id/delete", () => {
+describe("DELETE /api/errand/:id/delete", () => {
   it("error if not errand author", async () => {
     const res = await request(app)
       .delete(`/api/errand/${gregErrandId}/delete`)
