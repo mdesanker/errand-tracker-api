@@ -166,7 +166,7 @@ describe("GET /api/errand/project/:projectid", () => {
 ////////////////////////////////////////
 /* ERRAND PUT ROUTES */
 ////////////////////////////////////////
-describe.only("PUT /api/errand/:id/update", () => {
+describe("PUT /api/errand/:id/update", () => {
   it("author update specific errand", async () => {
     const newErrand = {
       title: "New title",
@@ -236,11 +236,21 @@ describe.only("PUT /api/errand/:id/update", () => {
   });
 });
 
-describe("PUT /api/errand/:id/toggle", () => {
+describe.only("PUT /api/errand/:id/toggle", () => {
   it("set isComplete to true on specific errand", async () => {
     const res = await request(app)
-      .put(`/api/errand/${errandId}/toggle`)
+      .put(`/api/errand/${gregErrandId}/toggle`)
       .set("x-auth-token", gregToken);
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toHaveProperty("isComplete");
+    expect(res.body.isComplete).toBe(true);
+  });
+
+  it("allow project member to toggle isComplete", async () => {
+    const res = await request(app)
+      .put(`/api/errand/${gregAndGrettaErrandId}/toggle`)
+      .set("x-auth-token", grettaToken);
 
     expect(res.statusCode).toEqual(200);
     expect(res.body).toHaveProperty("isComplete");
