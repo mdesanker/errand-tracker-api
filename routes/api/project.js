@@ -110,8 +110,64 @@ project.post("/create", auth, [
       // Save project
       await project.save();
 
-      console.log(project);
       res.json(project);
+    } catch (err) {
+      console.error(err.message);
+      return res.status(500).send("Server error");
+    }
+  },
+]);
+
+// @route   PUT /api/project/:id/update
+// @desc    Update project
+// @access  Private
+project.put("/:id/update", auth, [
+  // Validate and sanitize input
+  check("title", "Title is required").trim().notEmpty(),
+  check("description").trim(),
+
+  // Process input
+  async (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+      const { id } = req.params;
+      const { title, description } = req.body;
+
+      // Check project exists
+      const project = await Project.findById(id).populate("author");
+
+      if (!project) {
+        return res
+          .status(400)
+          .json({ errors: [{ msg: "Invalid project id" }] });
+      }
+
+      // Check user is author
+      if (!(req.user.id === project.author.id)) {
+        return res
+          .status(401)
+          .json({ errors: [{ msg: "Invalid credentials" }] });
+      }
+
+      // Create new project
+      const newProject = new Project({
+        title,
+        description,
+        members: project.members,
+        _id: id,
+      });
+
+      // Update project
+      const update = await Project.findByIdAndUpdate(id, newProject, {
+        new: true,
+      });
+
+      res.json(update);
     } catch (err) {
       console.error(err.message);
       return res.status(500).send("Server error");

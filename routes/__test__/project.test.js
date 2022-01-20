@@ -135,7 +135,7 @@ describe("POST /api/project/create", () => {
 describe("PUT /api/project/:id/update", () => {
   it("return updated project", async () => {
     const res = await request(app)
-      .put(`api/project/${projectid}/update`)
+      .put(`/api/project/${projectid}/update`)
       .set("x-auth-token", token)
       .send({
         title: "Updated project title",
@@ -151,7 +151,7 @@ describe("PUT /api/project/:id/update", () => {
 
   it("return error for invalid project id", async () => {
     const res = await request(app)
-      .put(`api/project/${invalidProjectid}/update`)
+      .put(`/api/project/${invalidProjectid}/update`)
       .set("x-auth-token", token)
       .send({
         title: "Updated project title",
@@ -165,22 +165,22 @@ describe("PUT /api/project/:id/update", () => {
 
   it("return error for user not author", async () => {
     const res = await request(app)
-      .put(`api/project/${projectid}/update`)
+      .put(`/api/project/${projectid}/update`)
       .set("x-auth-token", secondToken)
       .send({
         title: "Updated project title",
         description: "This project has a description",
       });
 
-    expect(res.statusCode).toEqual(400);
+    expect(res.statusCode).toEqual(401);
     expect(res.body).toHaveProperty("errors");
     expect(res.body.errors[0].msg).toEqual("Invalid credentials");
   });
 
   it("return error for no title", async () => {
     const res = await request(app)
-      .put(`api/project/${projectid}/update`)
-      .set("x-auth-token", secondToken)
+      .put(`/api/project/${projectid}/update`)
+      .set("x-auth-token", token)
       .send({
         description: "This project has a description",
       });
