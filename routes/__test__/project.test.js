@@ -190,3 +190,49 @@ describe("PUT /api/project/:id/update", () => {
     expect(res.body.errors[0].msg).toEqual("Title is required");
   });
 });
+
+describe("PUT /api/project/:id/addmember", () => {
+  it("add member to project by id", async () => {
+    const res = await request(app)
+      .put(`/api/project/${projectid}/addmember`)
+      .set("x-auth-token", token)
+      .send({ id: "61e7ec186394874272d11e67" });
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toHaveProperty("members");
+    expect(res.body.members[0]).toEqual("61e7ec186394874272d11e67");
+  });
+
+  it("return error for invalid project id", async () => {
+    const res = await request(app)
+      .put(`/api/project/${invalidProjectid}/addmember`)
+      .set("x-auth-token", token)
+      .send({ id: "61e7ec186394874272d11e67" });
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toHaveProperty("errors");
+    expect(res.body.errors[0].msg).toEqual("Invalid project id");
+  });
+
+  it("return error if invited user already a member", async () => {
+    const res = await request(app)
+      .put(`/api/project/${projectid}/addmember`)
+      .set("x-auth-token", token)
+      .send({ id: "61e7ec186394874272d11e67" });
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toHaveProperty("errors");
+    expect(res.body.errors[0].msg).toEqual("User already a member");
+  });
+
+  it("return error for if not project owner", async () => {
+    const res = await request(app)
+      .put(`/api/project/${projectid}/addmember`)
+      .set("x-auth-token", secondToken)
+      .send({ id: "61e7ec186394874272d11e67" });
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toHaveProperty("errors");
+    expect(res.body.errors[0].msg).toEqual("Invalid credentials");
+  });
+});
