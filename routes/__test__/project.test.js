@@ -239,7 +239,7 @@ describe("PUT /api/project/:id/addmember", () => {
   });
 });
 
-describe.only("PUT /api/project/:id/removemember", () => {
+describe("PUT /api/project/:id/removemember", () => {
   it("remove member from project by id", async () => {
     const res = await request(app)
       .put(`/api/project/${projectid}/removemember`)

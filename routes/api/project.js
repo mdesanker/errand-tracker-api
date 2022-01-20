@@ -219,4 +219,46 @@ project.put("/:id/addmember", auth, async (req, res, next) => {
   }
 });
 
+// @route   PUT /api/project/:id/removemember
+// @desc    Remove member from project
+// @access  Private
+project.put("/:id/removemember", auth, async (req, res, next) => {
+  const { id } = req.params;
+  const { userid } = req.body;
+
+  try {
+    // Check project exists
+    const project = await Project.findById(id).populate("author members");
+
+    if (!project) {
+      return res.status(400).json({ errors: [{ msg: "Invalid project id" }] });
+    }
+
+    // Check user is author
+    if (!(req.user.id === project.author.id)) {
+      return res.status(401).json({ errors: [{ msg: "Invalid credentials" }] });
+    }
+
+    // Check userid is a member
+    if (project.members.filter((member) => member.id === userid).length === 0) {
+      return res.status(400).json({ errors: [{ msg: "Invalid user id" }] });
+    }
+
+    // Generate new member list
+    const members = project.members.filter((member) => member.id !== userid);
+
+    // Update projet
+    const update = await Project.findByIdAndUpdate(
+      id,
+      { members },
+      { new: true }
+    );
+
+    res.json(update);
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).send("Server error");
+  }
+});
+
 module.exports = project;
