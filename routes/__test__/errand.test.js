@@ -53,7 +53,9 @@ describe("POST /api/errand/test", () => {
   });
 });
 
-// Errand POST routes
+////////////////////////////////////////
+/* ERRAND POST ROUTES */
+////////////////////////////////////////
 describe("POST /api/errand/create", () => {
   it("create errand", async () => {
     const res = await request(app)
@@ -80,7 +82,9 @@ describe("POST /api/errand/create", () => {
   });
 });
 
-// Errand GET routes
+////////////////////////////////////////
+/* ERRAND GET ROUTES */
+////////////////////////////////////////
 describe("GET /api/errand/all", () => {
   it("return all errands in db", async () => {
     const res = await request(app)
@@ -159,16 +163,18 @@ describe("GET /api/errand/project/:projectid", () => {
   });
 });
 
-// Errand PUT routes
+////////////////////////////////////////
+/* ERRAND PUT ROUTES */
+////////////////////////////////////////
 describe("PUT /api/errand/:id/update", () => {
-  it("update title and description for specific errand", async () => {
+  it("author update specific errand", async () => {
     const newErrand = {
       title: "New title",
       description: "This is an updated description",
     };
 
     const res = await request(app)
-      .put(`/api/errand/${errandId}/update`)
+      .put(`/api/errand/${gregErrandId}/update`)
       .set("x-auth-token", gregToken)
       .send(newErrand);
 
@@ -179,7 +185,25 @@ describe("PUT /api/errand/:id/update", () => {
     expect(res.body.description).toEqual("This is an updated description");
   });
 
-  it("error if user not author of errand", async () => {
+  it("project member update errand", async () => {
+    const newErrand = {
+      title: "New title",
+      description: "This is an updated description",
+    };
+
+    const res = await request(app)
+      .put(`/api/errand/${gregErrandId}/update`)
+      .set("x-auth-token", grettaToken)
+      .send(newErrand);
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toHaveProperty("title");
+    expect(res.body.title).toEqual("New title");
+    expect(res.body).toHaveProperty("author");
+    expect(res.body.description).toEqual("This is an updated description");
+  });
+
+  it("error if user not author or project member", async () => {
     const newErrand = {
       title: "New title",
       description: "This is an updated description",
@@ -244,7 +268,9 @@ describe("PUT /api/errand/:id/toggle", () => {
   });
 });
 
-// Errand DELETE routes
+////////////////////////////////////////
+/* ERRAND DELETE ROUTES */
+////////////////////////////////////////
 describe("DELETE /api/errand/:id/delete", () => {
   it("error if not errand author", async () => {
     const res = await request(app)
