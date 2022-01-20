@@ -5,14 +5,17 @@ const initializeMongoServer = require("../../config/mongoConfigTesting");
 const seedDB = require("./seed");
 
 // Global variables
-let token;
-let secondToken;
-let userid = "61e71828c9cb2005247017c7";
-let invalidUserid = "0000000000cb200524701123";
-let projectid = "61e7dd93ecec03286743e04e";
-let invalidProjectid = "00000093ecec03286743e04e";
-let errandid = "61e71a80f0f8833ac7d5201d";
-let invalidErrandid = "00000080f0f8833ac7d5201d";
+let gregToken;
+let grettaToken;
+const gregUserId = "61e71828c9cb2005247017c7";
+const invalidUserId = "0000000000cb200524701123";
+const gregProjectId = "61e7dd93ecec03286743e04e";
+const gregAndGrettaProjectId = "61e7dd93ecec03286743e04a";
+const invalidProjectId = "00000093ecec03286743e04e";
+const errandId = "61e71a80f0f8833ac7d52011";
+const gregErrandId = "61e71a80f0f8833ac7d5201d";
+const gregAndGrettaErrandId = "61e71a80f0f8833ac7d5201e";
+const invalidErrandId = "00000080f0f8833ac7d5201d";
 
 // Test preparations
 beforeAll(async () => {
@@ -20,18 +23,18 @@ beforeAll(async () => {
   await seedDB();
 
   // Generate token
-  const login = await request(app).post("/api/user/login").send({
+  const gregLogin = await request(app).post("/api/user/login").send({
     email: "greg@example.com",
     password: "password",
   });
-  token = login.body.token;
+  gregToken = gregLogin.body.token;
 
   // Generate second token
-  const secondLogin = await request(app).post("/api/user/login").send({
+  const grettaLogin = await request(app).post("/api/user/login").send({
     email: "gretta@example.net",
     password: "password",
   });
-  secondToken = secondLogin.body.token;
+  grettaToken = grettaLogin.body.token;
 });
 
 afterAll(() => {
@@ -55,7 +58,7 @@ describe("POST /api/errand/create", () => {
   it("create errand", async () => {
     const res = await request(app)
       .post("/api/errand/create")
-      .set("x-auth-token", token)
+      .set("x-auth-token", gregToken)
       .send({
         title: "Sample title",
       });
@@ -68,7 +71,7 @@ describe("POST /api/errand/create", () => {
   it("error creating errand missing required title", async () => {
     const res = await request(app)
       .post("/api/errand/create")
-      .set("x-auth-token", token)
+      .set("x-auth-token", gregToken)
       .send({});
 
     expect(res.statusCode).toEqual(400);
@@ -82,7 +85,7 @@ describe("GET /api/errand/all", () => {
   it("return all errands in db", async () => {
     const res = await request(app)
       .get("/api/errand/all")
-      .set("x-auth-token", token);
+      .set("x-auth-token", gregToken);
 
     expect(res.statusCode).toEqual(200);
     expect(res.body[0]).toHaveProperty("title");
@@ -93,18 +96,18 @@ describe("GET /api/errand/all", () => {
 describe("GET /api/errand/:id", () => {
   it("return errand by id", async () => {
     const res = await request(app)
-      .get(`/api/errand/${errandid}`)
-      .set("x-auth-token", token);
+      .get(`/api/errand/${errandId}`)
+      .set("x-auth-token", gregToken);
 
     expect(res.statusCode).toEqual(200);
     expect(res.body).toHaveProperty("title");
     expect(res.body).toHaveProperty("author");
   });
 
-  it("return errand by id", async () => {
+  it("error finding errand id", async () => {
     const res = await request(app)
-      .get(`/api/errand/${invalidErrandid}`)
-      .set("x-auth-token", token);
+      .get(`/api/errand/${invalidErrandId}`)
+      .set("x-auth-token", gregToken);
 
     expect(res.statusCode).toEqual(400);
     expect(res.body).toHaveProperty("errors");
@@ -115,8 +118,8 @@ describe("GET /api/errand/:id", () => {
 describe("GET /api/errand/user/:userid", () => {
   it("return errands for specific user", async () => {
     const res = await request(app)
-      .get(`/api/errand/user/${userid}`)
-      .set("x-auth-token", token);
+      .get(`/api/errand/user/${gregUserId}`)
+      .set("x-auth-token", gregToken);
 
     expect(res.statusCode).toEqual(200);
     expect(res.body[0]).toHaveProperty("title");
@@ -125,8 +128,8 @@ describe("GET /api/errand/user/:userid", () => {
 
   it("return error for invalid userid", async () => {
     const res = await request(app)
-      .get(`/api/errand/user/${invalidUserid}`)
-      .set("x-auth-token", token);
+      .get(`/api/errand/user/${invalidUserId}`)
+      .set("x-auth-token", gregToken);
 
     expect(res.statusCode).toEqual(400);
     expect(res.body).toHaveProperty("errors");
@@ -137,8 +140,8 @@ describe("GET /api/errand/user/:userid", () => {
 describe("GET /api/errand/project/:projectid", () => {
   it("return errands for specific project", async () => {
     const res = await request(app)
-      .get(`/api/errand/project/${projectid}`)
-      .set("x-auth-token", token);
+      .get(`/api/errand/project/${gregProjectId}`)
+      .set("x-auth-token", gregToken);
 
     expect(res.statusCode).toEqual(200);
     expect(res.body[0]).toHaveProperty("title");
@@ -147,8 +150,8 @@ describe("GET /api/errand/project/:projectid", () => {
 
   it("return error for invalid id", async () => {
     const res = await request(app)
-      .get(`/api/errand/project/${invalidProjectid}`)
-      .set("x-auth-token", token);
+      .get(`/api/errand/project/${invalidProjectId}`)
+      .set("x-auth-token", gregToken);
 
     expect(res.statusCode).toEqual(400);
     expect(res.body).toHaveProperty("errors");
@@ -165,8 +168,8 @@ describe("PUT /api/errand/:id/update", () => {
     };
 
     const res = await request(app)
-      .put(`/api/errand/${errandid}/update`)
-      .set("x-auth-token", token)
+      .put(`/api/errand/${errandId}/update`)
+      .set("x-auth-token", gregToken)
       .send(newErrand);
 
     expect(res.statusCode).toEqual(200);
@@ -183,8 +186,8 @@ describe("PUT /api/errand/:id/update", () => {
     };
 
     const res = await request(app)
-      .put(`/api/errand/${errandid}/update`)
-      .set("x-auth-token", secondToken)
+      .put(`/api/errand/${errandId}/update`)
+      .set("x-auth-token", grettaToken)
       .send(newErrand);
 
     expect(res.statusCode).toEqual(401);
@@ -199,8 +202,8 @@ describe("PUT /api/errand/:id/update", () => {
     };
 
     const res = await request(app)
-      .put(`/api/errand/${invalidErrandid}/update`)
-      .set("x-auth-token", token)
+      .put(`/api/errand/${invalidErrandId}/update`)
+      .set("x-auth-token", gregToken)
       .send(newErrand);
 
     expect(res.statusCode).toEqual(400);
@@ -212,8 +215,8 @@ describe("PUT /api/errand/:id/update", () => {
 describe("PUT /api/errand/:id/toggle", () => {
   it("set isComplete to true on specific errand", async () => {
     const res = await request(app)
-      .put(`/api/errand/${errandid}/toggle`)
-      .set("x-auth-token", token);
+      .put(`/api/errand/${errandId}/toggle`)
+      .set("x-auth-token", gregToken);
 
     expect(res.statusCode).toEqual(200);
     expect(res.body).toHaveProperty("isComplete");
@@ -222,8 +225,8 @@ describe("PUT /api/errand/:id/toggle", () => {
 
   it("return error if not errand author", async () => {
     const res = await request(app)
-      .put(`/api/errand/${errandid}/toggle`)
-      .set("x-auth-token", secondToken);
+      .put(`/api/errand/${errandId}/toggle`)
+      .set("x-auth-token", grettaToken);
 
     expect(res.statusCode).toEqual(401);
     expect(res.body).toHaveProperty("errors");
@@ -232,8 +235,8 @@ describe("PUT /api/errand/:id/toggle", () => {
 
   it("return error if invalid errand id", async () => {
     const res = await request(app)
-      .put(`/api/errand/${invalidErrandid}/toggle`)
-      .set("x-auth-token", token);
+      .put(`/api/errand/${invalidErrandId}/toggle`)
+      .set("x-auth-token", gregToken);
 
     expect(res.statusCode).toEqual(400);
     expect(res.body).toHaveProperty("errors");
@@ -245,8 +248,8 @@ describe("PUT /api/errand/:id/toggle", () => {
 describe("DELETE /api/errand/:id/delete", () => {
   it("error if not errand author", async () => {
     const res = await request(app)
-      .delete(`/api/errand/${errandid}/delete`)
-      .set("x-auth-token", secondToken);
+      .delete(`/api/errand/${errandId}/delete`)
+      .set("x-auth-token", grettaToken);
 
     expect(res.statusCode).toEqual(401);
     expect(res.body).toHaveProperty("errors");
@@ -255,13 +258,13 @@ describe("DELETE /api/errand/:id/delete", () => {
 
   it("delete errand by id", async () => {
     const res = await request(app)
-      .delete(`/api/errand/${errandid}/delete`)
-      .set("x-auth-token", token);
+      .delete(`/api/errand/${errandId}/delete`)
+      .set("x-auth-token", gregToken);
 
     // Find deleted errand should return error
     const findErrand = await request(app)
-      .get(`/api/errand/${errandid}`)
-      .set("x-auth-token", token);
+      .get(`/api/errand/${errandId}`)
+      .set("x-auth-token", gregToken);
 
     expect(res.statusCode).toEqual(200);
     expect(res.body.msg).toEqual("Errand deleted");
@@ -271,8 +274,8 @@ describe("DELETE /api/errand/:id/delete", () => {
 
   it("error if invalid errand id", async () => {
     const res = await request(app)
-      .delete(`/api/errand/${invalidErrandid}/delete`)
-      .set("x-auth-token", token);
+      .delete(`/api/errand/${invalidErrandId}/delete`)
+      .set("x-auth-token", gregToken);
 
     expect(res.statusCode).toEqual(400);
     expect(res.body).toHaveProperty("errors");
