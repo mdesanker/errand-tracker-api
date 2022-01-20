@@ -186,8 +186,10 @@ errand.put("/:id/update", auth, [
         return res.status(400).json({ errors: [{ msg: "Invalid errand id" }] });
       }
 
-      // Check errand belongs to user
-      if (!(req.user.id === errand.author.id)) {
+      // Check user is author
+      const isAuthor = req.user.id === errand.author.id;
+
+      if (!isAuthor) {
         return res
           .status(401)
           .json({ errors: [{ msg: "Invalid credentials" }] });
@@ -237,7 +239,9 @@ errand.put("/:id/toggle", auth, async (req, res, next) => {
     }
 
     // Check user is author
-    if (!(req.user.id === errand.author.id)) {
+    const isAuthor = req.user.id === errand.author.id;
+
+    if (!isAuthor) {
       return res.status(401).json({ errors: [{ msg: "Invalid credentials" }] });
     }
 
@@ -270,7 +274,9 @@ errand.delete("/:id/delete", auth, async (req, res, next) => {
     }
 
     // Check user is author
-    if (!(req.user.id === errand.author.id)) {
+    const isAuthor = req.user.id === errand.author.id;
+
+    if (!isAuthor) {
       return res.status(401).json({ errors: [{ msg: "Invalid credentials" }] });
     }
 

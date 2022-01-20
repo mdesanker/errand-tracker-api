@@ -40,7 +40,7 @@ afterAll(() => {
 });
 
 // Test
-describe.skip("POST /api/errand/test", () => {
+describe("POST /api/errand/test", () => {
   it("errand test route", async () => {
     const res = await request(app)
       .post("/api/errand/test")
