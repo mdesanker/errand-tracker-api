@@ -166,7 +166,7 @@ describe("GET /api/errand/project/:projectid", () => {
 ////////////////////////////////////////
 /* ERRAND PUT ROUTES */
 ////////////////////////////////////////
-describe("PUT /api/errand/:id/update", () => {
+describe.only("PUT /api/errand/:id/update", () => {
   it("author update specific errand", async () => {
     const newErrand = {
       title: "New title",
@@ -192,7 +192,7 @@ describe("PUT /api/errand/:id/update", () => {
     };
 
     const res = await request(app)
-      .put(`/api/errand/${gregErrandId}/update`)
+      .put(`/api/errand/${gregAndGrettaErrandId}/update`)
       .set("x-auth-token", grettaToken)
       .send(newErrand);
 
