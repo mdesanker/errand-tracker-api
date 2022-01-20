@@ -200,7 +200,9 @@ describe("PUT /api/project/:id/addmember", () => {
 
     expect(res.statusCode).toEqual(200);
     expect(res.body).toHaveProperty("members");
-    expect(res.body.members[0]).toEqual("61e7ec186394874272d11e67");
+    expect(res.body.members).toEqual(
+      expect.arrayContaining(["61e7ec186394874272d11e67"])
+    );
   });
 
   it("return error for invalid project id", async () => {
@@ -228,6 +230,54 @@ describe("PUT /api/project/:id/addmember", () => {
   it("return error for if not project owner", async () => {
     const res = await request(app)
       .put(`/api/project/${projectid}/addmember`)
+      .set("x-auth-token", secondToken)
+      .send({ userid: "61e7ec186394874272d11e67" });
+
+    expect(res.statusCode).toEqual(401);
+    expect(res.body).toHaveProperty("errors");
+    expect(res.body.errors[0].msg).toEqual("Invalid credentials");
+  });
+});
+
+describe.only("PUT /api/project/:id/removemember", () => {
+  it("remove member from project by id", async () => {
+    const res = await request(app)
+      .put(`/api/project/${projectid}/removemember`)
+      .set("x-auth-token", token)
+      .send({ userid: "61e7ec186394874272d11e67" });
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toHaveProperty("members");
+    expect(res.body.members).toEqual(
+      expect.not.arrayContaining(["61e7ec186394874272d11e67"])
+    );
+  });
+
+  it("return error for invalid project id", async () => {
+    const res = await request(app)
+      .put(`/api/project/${invalidProjectid}/removemember`)
+      .set("x-auth-token", token)
+      .send({ userid: "61e7ec186394874272d11e67" });
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toHaveProperty("errors");
+    expect(res.body.errors[0].msg).toEqual("Invalid project id");
+  });
+
+  it("return error if userid not a member", async () => {
+    const res = await request(app)
+      .put(`/api/project/${projectid}/removemember`)
+      .set("x-auth-token", token)
+      .send({ userid: "61e7ec186394874272d11e67" });
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toHaveProperty("errors");
+    expect(res.body.errors[0].msg).toEqual("Invalid user id");
+  });
+
+  it("return error for if not project owner", async () => {
+    const res = await request(app)
+      .put(`/api/project/${projectid}/removemember`)
       .set("x-auth-token", secondToken)
       .send({ userid: "61e7ec186394874272d11e67" });
 
