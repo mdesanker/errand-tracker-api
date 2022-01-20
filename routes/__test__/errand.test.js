@@ -236,7 +236,7 @@ describe("PUT /api/errand/:id/update", () => {
   });
 });
 
-describe.only("PUT /api/errand/:id/toggle", () => {
+describe("PUT /api/errand/:id/toggle", () => {
   it("set isComplete to true on specific errand", async () => {
     const res = await request(app)
       .put(`/api/errand/${gregErrandId}/toggle`)
@@ -281,10 +281,10 @@ describe.only("PUT /api/errand/:id/toggle", () => {
 ////////////////////////////////////////
 /* ERRAND DELETE ROUTES */
 ////////////////////////////////////////
-describe("DELETE /api/errand/:id/delete", () => {
+describe.only("DELETE /api/errand/:id/delete", () => {
   it("error if not errand author", async () => {
     const res = await request(app)
-      .delete(`/api/errand/${errandId}/delete`)
+      .delete(`/api/errand/${gregErrandId}/delete`)
       .set("x-auth-token", grettaToken);
 
     expect(res.statusCode).toEqual(401);
@@ -294,13 +294,29 @@ describe("DELETE /api/errand/:id/delete", () => {
 
   it("delete errand by id", async () => {
     const res = await request(app)
-      .delete(`/api/errand/${errandId}/delete`)
+      .delete(`/api/errand/${gregErrandId}/delete`)
       .set("x-auth-token", gregToken);
 
     // Find deleted errand should return error
     const findErrand = await request(app)
-      .get(`/api/errand/${errandId}`)
+      .get(`/api/errand/${gregErrandId}`)
       .set("x-auth-token", gregToken);
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body.msg).toEqual("Errand deleted");
+    expect(findErrand.statusCode).toEqual(400);
+    expect(findErrand.body.errors[0].msg).toEqual("Invalid errand id");
+  });
+
+  it("allow project members to delete errand", async () => {
+    const res = await request(app)
+      .delete(`/api/errand/${gregAndGrettaErrandId}/delete`)
+      .set("x-auth-token", grettaToken);
+
+    // Find deleted errand should return error
+    const findErrand = await request(app)
+      .get(`/api/errand/${gregAndGrettaErrandId}`)
+      .set("x-auth-token", grettaToken);
 
     expect(res.statusCode).toEqual(200);
     expect(res.body.msg).toEqual("Errand deleted");
