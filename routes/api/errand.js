@@ -94,7 +94,7 @@ errand.get("/:id", auth, async (req, res, next) => {
     const errand = await Errand.findById(id).populate("author project");
 
     if (!errand) {
-      return res.status(400).json({ errors: [{ msg: "Invalid errandid" }] });
+      return res.status(400).json({ errors: [{ msg: "Invalid errand id" }] });
     }
 
     res.json(errand);
@@ -115,7 +115,7 @@ errand.get("/user/:userid", auth, async (req, res, next) => {
     const user = await User.findById(userid);
 
     if (!user) {
-      return res.status(400).json({ errors: [{ msg: "Invalid userid" }] });
+      return res.status(400).json({ errors: [{ msg: "Invalid user id" }] });
     }
 
     // Find user's errands
@@ -141,7 +141,7 @@ errand.get("/project/:projectid", async (req, res, next) => {
     const project = await Project.findById(projectid);
 
     if (!project) {
-      return res.status(400).json({ errors: [{ msg: "Invalid projectid" }] });
+      return res.status(400).json({ errors: [{ msg: "Invalid project id" }] });
     }
 
     // Return errands for project
@@ -183,7 +183,7 @@ errand.put("/:id/update", auth, [
       const errand = await Errand.findById(id).populate("author");
 
       if (!errand) {
-        return res.status(400).json({ errors: [{ msg: "Invalid errandid" }] });
+        return res.status(400).json({ errors: [{ msg: "Invalid errand id" }] });
       }
 
       // Check errand belongs to user
@@ -233,7 +233,7 @@ errand.put("/:id/toggle", auth, async (req, res, next) => {
     const errand = await Errand.findById(id).populate("author");
 
     if (!errand) {
-      return res.status(400).json({ errors: [{ msg: "Invalid errandid" }] });
+      return res.status(400).json({ errors: [{ msg: "Invalid errand id" }] });
     }
 
     // Check user is author
@@ -266,7 +266,7 @@ errand.delete("/:id/delete", auth, async (req, res, next) => {
     const errand = await Errand.findById(id).populate("author");
 
     if (!errand) {
-      return res.status(400).json({ errors: [{ msg: "Invalid errandid" }] });
+      return res.status(400).json({ errors: [{ msg: "Invalid errand id" }] });
     }
 
     // Check user is author

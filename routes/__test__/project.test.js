@@ -11,6 +11,7 @@ let userid = "61e71828c9cb2005247017c7";
 let invalidUserid = "0000000000cb200524701123";
 let projectid = "61e7dd93ecec03286743e04e";
 let invalidProjectid = "00000093ecec03286743e04e";
+let errandid = "61e71a80f0f8833ac7d5201d";
 
 // Test preparations
 beforeAll(async () => {
@@ -304,6 +305,16 @@ describe("DELETE /api/project/:id/delete", () => {
     expect(findProject.statusCode).toEqual(200);
   });
 
+  it("return error for invalid project id", async () => {
+    const res = await request(app)
+      .delete(`/api/project/${invalidProjectid}/delete`)
+      .set("x-auth-token", token);
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toHaveProperty("errors");
+    expect(res.body.errors[0].msg).toEqual("Invalid project id");
+  });
+
   it("delete project by id", async () => {
     const res = await request(app)
       .delete(`/api/project/${projectid}/delete`)
@@ -314,21 +325,19 @@ describe("DELETE /api/project/:id/delete", () => {
       .get(`/api/project/${projectid}`)
       .set("x-auth-token", token);
 
+    // Check project errands deleted
+    const findErrands = await request(app)
+      .get(`/api/errand/${errandid}`)
+      .set("x-auth-token", token);
+
     expect(res.statusCode).toEqual(200);
     expect(res.body).toHaveProperty("msg");
     expect(res.body.msg).toEqual("Project deleted");
     expect(findProject.statusCode).toEqual(400);
     expect(findProject.body).toHaveProperty("errors");
     expect(findProject.body.errors[0].msg).toEqual("Invalid project id");
-  });
-
-  it("return error for invalid project id", async () => {
-    const res = await request(app)
-      .delete(`/api/project/${invalidProjectid}/delete`)
-      .set("x-auth-token", token);
-
-    expect(res.statusCode).toEqual(400);
-    expect(res.body).toHaveProperty("errors");
-    expect(res.body.errors[0].msg).toEqual("Invalid project id");
+    expect(findErrands.statusCode).toEqual(400);
+    expect(findErrands.body).toHaveProperty("errors");
+    expect(findErrands.body.errors[0].msg).toEqual("Invalid errand id");
   });
 });

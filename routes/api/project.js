@@ -280,6 +280,13 @@ project.delete("/:id/delete", auth, async (req, res, next) => {
       return res.status(401).json({ errors: [{ msg: "Invalid credentials" }] });
     }
 
+    // Find and delete errands associated with project
+    const errands = await Errand.find({ project: id });
+
+    for (errand of errands) {
+      await Errand.findByIdAndDelete(errand.id);
+    }
+
     // Delete project
     await Project.findByIdAndDelete(id);
 

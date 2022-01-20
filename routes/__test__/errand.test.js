@@ -108,7 +108,7 @@ describe("GET /api/errand/:id", () => {
 
     expect(res.statusCode).toEqual(400);
     expect(res.body).toHaveProperty("errors");
-    expect(res.body.errors[0].msg).toEqual("Invalid errandid");
+    expect(res.body.errors[0].msg).toEqual("Invalid errand id");
   });
 });
 
@@ -130,7 +130,7 @@ describe("GET /api/errand/user/:userid", () => {
 
     expect(res.statusCode).toEqual(400);
     expect(res.body).toHaveProperty("errors");
-    expect(res.body.errors[0].msg).toEqual("Invalid userid");
+    expect(res.body.errors[0].msg).toEqual("Invalid user id");
   });
 });
 
@@ -152,7 +152,7 @@ describe("GET /api/errand/project/:projectid", () => {
 
     expect(res.statusCode).toEqual(400);
     expect(res.body).toHaveProperty("errors");
-    expect(res.body.errors[0].msg).toEqual("Invalid projectid");
+    expect(res.body.errors[0].msg).toEqual("Invalid project id");
   });
 });
 
@@ -205,7 +205,7 @@ describe("PUT /api/errand/:id/update", () => {
 
     expect(res.statusCode).toEqual(400);
     expect(res.body).toHaveProperty("errors");
-    expect(res.body.errors[0].msg).toEqual("Invalid errandid");
+    expect(res.body.errors[0].msg).toEqual("Invalid errand id");
   });
 });
 
@@ -237,7 +237,7 @@ describe("PUT /api/errand/:id/toggle", () => {
 
     expect(res.statusCode).toEqual(400);
     expect(res.body).toHaveProperty("errors");
-    expect(res.body.errors[0].msg).toEqual("Invalid errandid");
+    expect(res.body.errors[0].msg).toEqual("Invalid errand id");
   });
 });
 
@@ -266,7 +266,7 @@ describe("DELETE /api/errand/:id/delete", () => {
     expect(res.statusCode).toEqual(200);
     expect(res.body.msg).toEqual("Errand deleted");
     expect(findErrand.statusCode).toEqual(400);
-    expect(findErrand.body.errors[0].msg).toEqual("Invalid errandid");
+    expect(findErrand.body.errors[0].msg).toEqual("Invalid errand id");
   });
 
   it("error if invalid errand id", async () => {
@@ -276,6 +276,6 @@ describe("DELETE /api/errand/:id/delete", () => {
 
     expect(res.statusCode).toEqual(400);
     expect(res.body).toHaveProperty("errors");
-    expect(res.body.errors[0].msg).toEqual("Invalid errandid");
+    expect(res.body.errors[0].msg).toEqual("Invalid errand id");
   });
 });
