@@ -78,7 +78,7 @@ describe("GET /api/project/user/:userid", () => {
 
     expect(res.statusCode).toEqual(400);
     expect(res.body).toHaveProperty("errors");
-    expect(res.body.errors[0].msg).toEqual("Invalid userid");
+    expect(res.body.errors[0].msg).toEqual("Invalid user id");
   });
 });
 
@@ -101,7 +101,7 @@ describe("GET /api/project/:id", () => {
 
     expect(res.statusCode).toEqual(400);
     expect(res.body).toHaveProperty("errors");
-    expect(res.body.errors[0].msg).toEqual("Invalid projectid");
+    expect(res.body.errors[0].msg).toEqual("Invalid project id");
   });
 });
 
@@ -288,6 +288,22 @@ describe("PUT /api/project/:id/removemember", () => {
 });
 
 describe("DELETE /api/project/:id/delete", () => {
+  it("return error for invalid credentials", async () => {
+    const res = await request(app)
+      .delete(`/api/project/${projectid}/delete`)
+      .set("x-auth-token", secondToken);
+
+    // Check for deleted project
+    const findProject = await request(app)
+      .get(`/api/project/${projectid}`)
+      .set("x-auth-token", secondToken);
+
+    expect(res.statusCode).toEqual(401);
+    expect(res.body).toHaveProperty("errors");
+    expect(res.body.errors[0].msg).toEqual("Invalid credentials");
+    expect(findProject.statusCode).toEqual(200);
+  });
+
   it("delete project by id", async () => {
     const res = await request(app)
       .delete(`/api/project/${projectid}/delete`)
@@ -295,10 +311,12 @@ describe("DELETE /api/project/:id/delete", () => {
 
     // Check for deleted project
     const findProject = await request(app)
-      .get(`/app/project/${projectid}`)
+      .get(`/api/project/${projectid}`)
       .set("x-auth-token", token);
 
     expect(res.statusCode).toEqual(200);
+    expect(res.body).toHaveProperty("msg");
+    expect(res.body.msg).toEqual("Project deleted");
     expect(findProject.statusCode).toEqual(400);
     expect(findProject.body).toHaveProperty("errors");
     expect(findProject.body.errors[0].msg).toEqual("Invalid project id");
@@ -312,21 +330,5 @@ describe("DELETE /api/project/:id/delete", () => {
     expect(res.statusCode).toEqual(400);
     expect(res.body).toHaveProperty("errors");
     expect(res.body.errors[0].msg).toEqual("Invalid project id");
-  });
-
-  it("return error for invalid credentials", async () => {
-    const res = await request(app)
-      .delete(`/api/project/${projectid}/delete`)
-      .set("x-auth-token", secondToken);
-
-    // Check for deleted project
-    const findProject = await request(app)
-      .get(`/app/project/${projectid}`)
-      .set("x-auth-token", secondToken);
-
-    expect(res.statusCode).toEqual(400);
-    expect(res.body).toHaveProperty("errors");
-    expect(res.body.errors[0].msg).toEqual("Invalid credentials");
-    expect(findProject.statusCode).toEqual(200);
   });
 });

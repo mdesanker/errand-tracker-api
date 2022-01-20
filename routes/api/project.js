@@ -46,7 +46,7 @@ project.get("/user/:userid", auth, async (req, res, next) => {
     const user = await User.findById(userid);
 
     if (!user) {
-      return res.status(400).json({ errors: [{ msg: "Invalid userid" }] });
+      return res.status(400).json({ errors: [{ msg: "Invalid user id" }] });
     }
 
     //  Get projects
@@ -71,7 +71,7 @@ project.get("/:id", auth, async (req, res, next) => {
     const project = await Project.findById(id);
 
     if (!project) {
-      return res.status(400).json({ errors: [{ msg: "Invalid projectid" }] });
+      return res.status(400).json({ errors: [{ msg: "Invalid project id" }] });
     }
 
     res.json(project);
@@ -255,6 +255,35 @@ project.put("/:id/removemember", auth, async (req, res, next) => {
     );
 
     res.json(update);
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).send("Server error");
+  }
+});
+
+// @route   DELETE /api/project/:id/delete
+// @desc    Delete project by id
+// @access  Private
+project.delete("/:id/delete", auth, async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    // Check project id
+    const project = await Project.findById(id).populate("author");
+
+    if (!project) {
+      return res.status(400).json({ errors: [{ msg: "Invalid project id" }] });
+    }
+
+    // Check user is author
+    if (!(req.user.id === project.author.id)) {
+      return res.status(401).json({ errors: [{ msg: "Invalid credentials" }] });
+    }
+
+    // Delete project
+    await Project.findByIdAndDelete(id);
+
+    res.json({ msg: "Project deleted" });
   } catch (err) {
     console.error(err.message);
     return res.status(500).send("Server error");
