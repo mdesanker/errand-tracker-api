@@ -130,3 +130,63 @@ describe("POST /api/project/create", () => {
     expect(res.body.errors[0].msg).toEqual("Title is required");
   });
 });
+
+// Project PUT routes
+describe("PUT /api/project/:id/update", () => {
+  it("return updated project", async () => {
+    const res = await request(app)
+      .put(`api/project/${projectid}/update`)
+      .set("x-auth-token", token)
+      .send({
+        title: "Updated project title",
+        description: "This project has a description",
+      });
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toHaveProperty("title");
+    expect(res.body.title).toEqual("Updated project title");
+    expect(res.body).toHaveProperty("description");
+    expect(res.body.description).toEqual("This project has a description");
+  });
+
+  it("return error for invalid project id", async () => {
+    const res = await request(app)
+      .put(`api/project/${invalidProjectid}/update`)
+      .set("x-auth-token", token)
+      .send({
+        title: "Updated project title",
+        description: "This project has a description",
+      });
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toHaveProperty("errors");
+    expect(res.body.errors[0].msg).toEqual("Invalid project id");
+  });
+
+  it("return error for user not author", async () => {
+    const res = await request(app)
+      .put(`api/project/${projectid}/update`)
+      .set("x-auth-token", secondToken)
+      .send({
+        title: "Updated project title",
+        description: "This project has a description",
+      });
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toHaveProperty("errors");
+    expect(res.body.errors[0].msg).toEqual("Invalid credentials");
+  });
+
+  it("return error for no title", async () => {
+    const res = await request(app)
+      .put(`api/project/${projectid}/update`)
+      .set("x-auth-token", secondToken)
+      .send({
+        description: "This project has a description",
+      });
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toHaveProperty("errors");
+    expect(res.body.errors[0].msg).toEqual("Title is required");
+  });
+});
