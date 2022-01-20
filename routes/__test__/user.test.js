@@ -8,6 +8,7 @@ let gregToken;
 let grettaToken;
 const gregUserId = "61e71828c9cb2005247017c7";
 const grettaUserId = "61e7ec186394874272d11e67";
+const gregFriendUserId = "61e71828d0db200524701a24";
 const invalidUserId = "0000000000cb200524701123";
 
 ////////////////////////////////////////
@@ -188,3 +189,72 @@ describe("GET /api/user/:id", () => {
 ////////////////////////////////////////
 /* USER FRIEND REQUEST ROUTES */
 ////////////////////////////////////////
+describe.only("PUT /api/user/sendrequest/:id", () => {
+  it("send friend request from user to id", async () => {
+    const res = await request(app)
+      .put(`/api/user/sendrequest/${grettaUserId}`)
+      .set("x-auth-token", gregToken);
+
+    // Check gretta friend requests
+    const grettaRes = await request(app)
+      .get(`/api/user/${grettaUserId}`)
+      .set("x-auth-token", gregToken);
+
+    expect(res.statusCode).toEqual(200);
+    expect(grettaRes.statusCode).toEqual(200);
+    expect(grettaRes.body).toHaveProperty("friendRequests");
+    expect(grettaRes.body.friendRequests).toEqual(
+      expect.arrayContaining([gregUserId])
+    );
+  });
+
+  it("error for friend request already pending", async () => {
+    const res = await request(app)
+      .put(`/api/user/sendrequest/${grettaUserId}`)
+      .set("x-auth-token", gregToken);
+
+    // Check gretta friend requests
+    const grettaRes = await request(app)
+      .get(`/api/user/${grettaUserId}`)
+      .set("x-auth-token", gregToken);
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toHaveProperty("erorrs");
+    expect(res.body.errors[0].msg).toEqual("Friend request pending");
+    expect(grettaRes.statusCode).toEqual(200);
+    expect(grettaRes.body).toHaveProperty("friendRequests");
+    expect(grettaRes.body.friendRequests).toEqual(
+      expect.arrayContaining([gregUserId])
+    );
+  });
+
+  it("error for already friended", async () => {
+    const res = await request(app)
+      .put(`/api/user/sendrequest/${gregFriendUserId}`)
+      .set("x-auth-token", gregToken);
+
+    // Check george friend list
+    const gregFriendRes = await request(app)
+      .get(`/api/user/${gregFriendUserId}`)
+      .set("x-auth-token", gregToken);
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toHaveProperty("errors");
+    expect(res.body.errors[0].msg).toEqual("User already friended");
+    expect(gregFriendRes.statusCode).toEqual(200);
+    expect(gregFriendRes.body).toHaveProperty("friends");
+    expect(gregFriendRes.body.friends).toEqual(
+      expect.arrayContaining([gregUserId])
+    );
+  });
+
+  it("error for invalid user id", async () => {
+    const res = await request(app)
+      .put(`/api/user/sendrequest/${invalidUserId}`)
+      .set("x-auth-token", gregToken);
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toHaveProperty("errors");
+    expect(res.body.errors[0].msg).toEqual("Invalid user id");
+  });
+});

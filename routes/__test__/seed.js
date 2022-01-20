@@ -18,6 +18,7 @@ const generateGreg = () => {
     username: "Greg",
     email: "greg@example.com",
     password: "$2a$10$ijwz5joIBRc/.GSoOoYqtu3hxWu7AJSjlAUJapiEMunrtDe2Kme8m",
+    friends: ["61e71828d0db200524701a24"],
     _id: "61e71828c9cb2005247017c7",
   });
   users.push(user);
@@ -29,6 +30,17 @@ const generateGretta = () => {
     email: "gretta@example.net",
     password: "$2a$10$NewMjfxNR9NW7Dbk6gLpjuIHsbxv6pAfL/sE6LXj.HkNP1zQ3Oo2W",
     _id: "61e7ec186394874272d11e67",
+  });
+  users.push(user);
+};
+
+const generateGregFriend = () => {
+  const user = new User({
+    username: "George",
+    email: "greorge@example.edu",
+    password: "$2a$10$ijwz5joIBRc/.GSoOoYqtu3hxWu7AJSjlAUJapiEMunrtDe2Kme8m",
+    friends: ["61e71828c9cb2005247017c7"],
+    _id: "61e71828d0db200524701a24",
   });
   users.push(user);
 };
@@ -132,6 +144,7 @@ const seedDB = async () => {
   // Generate users
   generateGreg();
   generateGretta();
+  generateGregFriend();
 
   for (let i = 0; i < 3; i++) {
     generateUser();
