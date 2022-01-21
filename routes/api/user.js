@@ -284,8 +284,6 @@ user.put("/acceptrequest/:id", auth, async (req, res, next) => {
       { new: true }
     );
 
-    console.log(requestorUpdate);
-
     // Update user friend list and remove request
     const userFriends = user.friends.concat(id);
     const userFriendRequests = user.friendRequests.filter(
@@ -298,8 +296,52 @@ user.put("/acceptrequest/:id", auth, async (req, res, next) => {
       { new: true }
     );
 
-    console.log(userUpdate);
     res.json(userUpdate);
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).send("Server error");
+  }
+});
+
+// @route   PUT /api/user/unfriend/:id
+// @desc    Unfriend user id
+// @access  Private
+user.put("/unfriend/:id", auth, async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    // Check user id valid
+    const user = await User.findById(id).populate("friends");
+
+    if (!user) {
+      return res.status(400).json({ errors: [{ msg: "Invalid user id" }] });
+    }
+
+    // Remove requestor from user list
+    const userFriends = user.friends.filter(
+      (friend) => friend.id !== req.user.id
+    );
+
+    const userUpdate = await User.findByIdAndUpdate(
+      id,
+      { friends: userFriends },
+      { new: true }
+    );
+
+    // Remove user from requestor list
+    const requestor = await User.findById(req.user.id).populate("friends");
+
+    const requestorFriends = requestor.friends.filter(
+      (friend) => friend.id !== id
+    );
+
+    const requestorUpdate = await User.findByIdAndUpdate(
+      req.user.id,
+      { friends: requestorFriends },
+      { new: true }
+    );
+
+    res.json(requestorUpdate);
   } catch (err) {
     console.error(err.message);
     return res.status(500).send("Server error");

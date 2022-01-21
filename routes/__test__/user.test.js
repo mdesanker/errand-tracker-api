@@ -189,7 +189,7 @@ describe("GET /api/user/:id", () => {
 ////////////////////////////////////////
 /* USER FRIEND REQUEST ROUTES */
 ////////////////////////////////////////
-describe.only("PUT /api/user/sendrequest/:id", () => {
+describe("PUT /api/user/sendrequest/:id", () => {
   it("send friend request from user to id", async () => {
     const res = await request(app)
       .put(`/api/user/sendrequest/${grettaUserId}`)
@@ -259,7 +259,7 @@ describe.only("PUT /api/user/sendrequest/:id", () => {
   });
 });
 
-describe.only("PUT /api/user/acceptrequest/:id", () => {
+describe("PUT /api/user/acceptrequest/:id", () => {
   it("accept friend request for user id", async () => {
     // Gretta accepting friend request from greg
     const res = await request(app)
@@ -305,7 +305,7 @@ describe.only("PUT /api/user/acceptrequest/:id", () => {
   });
 });
 
-describe.only("PUT /api/user/unfriend/:id", () => {
+describe("PUT /api/user/unfriend/:id", () => {
   it("unfriend for both if one user triggers", async () => {
     // Gretta calls for unfriend
     const res = await request(app)
