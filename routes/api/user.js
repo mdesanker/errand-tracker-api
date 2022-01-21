@@ -177,7 +177,7 @@ user.get("/:id", auth, async (req, res, next) => {
   }
 });
 
-// @route   GET /api/user/sendrequest/:id
+// @route   PUT /api/user/sendrequest/:id
 // @desc    Send friend request to user id
 // @access  Private
 user.put("/sendrequest/:id", auth, async (req, res, next) => {
@@ -220,9 +220,6 @@ user.put("/sendrequest/:id", auth, async (req, res, next) => {
         .json({ errors: [{ msg: "Friend request pending" }] });
     }
 
-    console.log(user);
-    console.log(isFriends);
-
     // Send friend request
     const friendRequests = user.friendRequests.concat(req.user.id);
 
@@ -232,8 +229,77 @@ user.put("/sendrequest/:id", auth, async (req, res, next) => {
       { new: true }
     );
 
-    console.log(update);
     res.json(update);
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).send("Server error");
+  }
+});
+
+// @route   PUT /api/user/acceptrequest/:id
+// @desc    Accept friend request from user id
+// @access  Private
+user.put("/acceptrequest/:id", auth, async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    // Check id is valid
+    const requestor = await User.findById(id);
+
+    if (!requestor) {
+      return res.status(400).json({ errors: [{ msg: "Invalid user id" }] });
+    }
+
+    // console.log("REQUESTOR", requestor);
+
+    // Check friend request is valid
+    const user = await User.findById(req.user.id).populate(
+      "friends friendRequests"
+    );
+
+    // console.log("USER", user);
+
+    isRequested = false;
+
+    if (user.friendRequests.filter((request) => request.id === id).length !== 0)
+      isRequested = true;
+
+    // console.log(isRequested);
+
+    if (!isRequested) {
+      return res
+        .status(400)
+        .json({ errors: [{ msg: "Invalid friend request" }] });
+    }
+
+    // Update requestor friend list
+    const requestorFriends = requestor.friends.concat(req.user.id);
+    const requestorFriendRequests = requestor.friendRequests.filter(
+      (request) => request.id !== req.user.id
+    );
+
+    const requestorUpdate = await User.findByIdAndUpdate(
+      id,
+      { friends: requestorFriends, friendRequests: requestorFriendRequests },
+      { new: true }
+    );
+
+    console.log(requestorUpdate);
+
+    // Update user friend list and remove request
+    const userFriends = user.friends.concat(id);
+    const userFriendRequests = user.friendRequests.filter(
+      (request) => request.id !== id
+    );
+
+    const userUpdate = await User.findByIdAndUpdate(
+      req.user.id,
+      { friends: userFriends, friendRequests: userFriendRequests },
+      { new: true }
+    );
+
+    console.log(userUpdate);
+    res.json(userUpdate);
   } catch (err) {
     console.error(err.message);
     return res.status(500).send("Server error");

@@ -189,7 +189,7 @@ describe("GET /api/user/:id", () => {
 ////////////////////////////////////////
 /* USER FRIEND REQUEST ROUTES */
 ////////////////////////////////////////
-describe("PUT /api/user/sendrequest/:id", () => {
+describe.only("PUT /api/user/sendrequest/:id", () => {
   it("send friend request from user to id", async () => {
     const res = await request(app)
       .put(`/api/user/sendrequest/${grettaUserId}`)
@@ -290,7 +290,7 @@ describe.only("PUT /api/user/acceptrequest/:id", () => {
 
     expect(res.statusCode).toEqual(400);
     expect(res.body).toHaveProperty("errors");
-    expect(res.body.errors[0].msg).toEqual("No friend request from user");
+    expect(res.body.errors[0].msg).toEqual("Invalid friend request");
   });
 
   it("return error for incorrect user id", async () => {
