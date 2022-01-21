@@ -177,4 +177,67 @@ user.get("/:id", auth, async (req, res, next) => {
   }
 });
 
+// @route   GET /api/user/sendrequest/:id
+// @desc    Send friend request to user id
+// @access  Private
+user.put("/sendrequest/:id", auth, async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    // Check user id valid
+    const user = await User.findById(id).populate("friends friendRequests");
+
+    if (!user) {
+      return res.status(400).json({ errors: [{ msg: "Invalid user id" }] });
+    }
+
+    // Check if friends
+    let isFriends = false;
+
+    if (user.friends) {
+      isFriends =
+        user.friends.filter((friend) => friend.id === req.user.id).length !== 0;
+    }
+
+    if (isFriends) {
+      return res
+        .status(400)
+        .json({ errors: [{ msg: "User already friended" }] });
+    }
+
+    // Check if requested
+    let isFriendRequested = false;
+
+    if (user.friendRequests) {
+      isFriendRequested =
+        user.friendRequests.filter((friend) => friend.id === req.user.id)
+          .length !== 0;
+    }
+
+    if (isFriendRequested) {
+      return res
+        .status(400)
+        .json({ errors: [{ msg: "Friend request pending" }] });
+    }
+
+    console.log(user);
+    console.log(isFriends);
+
+    // Send friend request
+    const friendRequests = user.friendRequests.concat(req.user.id);
+
+    const update = await User.findByIdAndUpdate(
+      id,
+      { friendRequests },
+      { new: true }
+    );
+
+    console.log(update);
+    res.json(update);
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).send("Server error");
+  }
+});
+
 module.exports = user;

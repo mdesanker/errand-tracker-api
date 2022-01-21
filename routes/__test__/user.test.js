@@ -219,7 +219,7 @@ describe.only("PUT /api/user/sendrequest/:id", () => {
       .set("x-auth-token", gregToken);
 
     expect(res.statusCode).toEqual(400);
-    expect(res.body).toHaveProperty("erorrs");
+    expect(res.body).toHaveProperty("errors");
     expect(res.body.errors[0].msg).toEqual("Friend request pending");
     expect(grettaRes.statusCode).toEqual(200);
     expect(grettaRes.body).toHaveProperty("friendRequests");
