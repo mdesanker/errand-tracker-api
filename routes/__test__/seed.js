@@ -29,6 +29,7 @@ const generateGretta = () => {
     username: "Gretta",
     email: "gretta@example.net",
     password: "$2a$10$NewMjfxNR9NW7Dbk6gLpjuIHsbxv6pAfL/sE6LXj.HkNP1zQ3Oo2W",
+    friendRequests: ["61e71828d0db200524701a24"],
     _id: "61e7ec186394874272d11e67",
   });
   users.push(user);
@@ -190,7 +191,7 @@ const seedDB = async () => {
     }
   }
 
-  // console.log(users.slice(0, 3));
+  console.log(users.slice(0, 3));
   // console.log(projects);
   // console.log(errands[0]);
   return { users, projects, errands };

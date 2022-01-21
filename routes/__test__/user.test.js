@@ -305,6 +305,42 @@ describe("PUT /api/user/acceptrequest/:id", () => {
   });
 });
 
+describe("PUT /api/user/declinerequest/:id", () => {
+  it("remove friend request from user", async () => {
+    const res = await request(app)
+      .put(`/api/user/declinerequest/${gregFriendUserId}`)
+      .set("x-auth-token", grettaToken);
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toHaveProperty("friendRequests");
+    expect(res.body.friendRequests).toEqual(
+      expect.not.arrayContaining([gregFriendUserId])
+    );
+  });
+
+  it("no change if no friend request", async () => {
+    const res = await request(app)
+      .put(`/api/user/declinerequest/${gregFriendUserId}`)
+      .set("x-auth-token", grettaToken);
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toHaveProperty("friendRequests");
+    expect(res.body.friendRequests).toEqual(
+      expect.not.arrayContaining([gregFriendUserId])
+    );
+  });
+
+  it("error if invalid user id", async () => {
+    const res = await request(app)
+      .put(`/api/user/declinerequest/${invalidUserId}`)
+      .set("x-auth-token", grettaToken);
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toHaveProperty("errors");
+    expect(res.body.errors[0].msg).toEqual("Invalid user id");
+  });
+});
+
 describe("PUT /api/user/unfriend/:id", () => {
   it("unfriend for both if one user triggers", async () => {
     // Gretta calls for unfriend
