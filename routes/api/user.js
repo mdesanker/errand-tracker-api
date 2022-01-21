@@ -303,6 +303,40 @@ user.put("/acceptrequest/:id", auth, async (req, res, next) => {
   }
 });
 
+// @route   PUT /api/user/declinerequest/:id
+// @desc    Decline friend request
+// @access  Private
+user.put("/declinerequest/:id", auth, async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    // Check requestor id is valid
+    const requestor = await User.findById(id);
+
+    if (!requestor) {
+      return res.status(400).json({ errors: [{ msg: "Invalid user id" }] });
+    }
+
+    // Remove friend request
+    const user = await User.findById(req.user.id).populate("friendRequests");
+
+    const friendRequests = user.friendRequests.filter(
+      (request) => request.id !== id
+    );
+
+    const userUpdate = await User.findByIdAndUpdate(
+      req.user.id,
+      { friendRequests },
+      { new: true }
+    );
+
+    res.json(userUpdate);
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).send("Server error");
+  }
+});
+
 // @route   PUT /api/user/unfriend/:id
 // @desc    Unfriend user id
 // @access  Private

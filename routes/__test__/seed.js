@@ -191,7 +191,7 @@ const seedDB = async () => {
     }
   }
 
-  console.log(users.slice(0, 3));
+  // console.log(users.slice(0, 3));
   // console.log(projects);
   // console.log(errands[0]);
   return { users, projects, errands };

@@ -12,7 +12,7 @@ Users can create errands with title, description, due date, priority,project, an
 - [x] Login
 - [x] Send friend request
 - [x] Accept friend request
-- [] Decline friend request
+- [x] Decline friend request
 - [x] Unfriend
 
 ### Errands
