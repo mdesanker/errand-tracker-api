@@ -240,7 +240,7 @@ describe("PUT /api/errand/:id/update", () => {
 });
 
 describe("PUT /api/errand/:id/toggle", () => {
-  it("set isComplete to true on specific errand", async () => {
+  it("toggle isComplete to true if false", async () => {
     const res = await request(app)
       .put(`/api/errand/${gregErrandId}/toggle`)
       .set("x-auth-token", gregToken);
@@ -248,6 +248,16 @@ describe("PUT /api/errand/:id/toggle", () => {
     expect(res.statusCode).toEqual(200);
     expect(res.body).toHaveProperty("isComplete");
     expect(res.body.isComplete).toBe(true);
+  });
+
+  it("toggle isComplete to false if true", async () => {
+    const res = await request(app)
+      .put(`/api/errand/${gregErrandId}/toggle`)
+      .set("x-auth-token", gregToken);
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toHaveProperty("isComplete");
+    expect(res.body.isComplete).toBe(false);
   });
 
   it("allow project member to toggle isComplete", async () => {
