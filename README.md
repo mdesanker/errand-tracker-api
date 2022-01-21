@@ -23,7 +23,7 @@ Users can create errands with title, description, due date, priority,project, an
 - [x] Get errand by id
 - [x] Create errand
 - [x] Update errand (author or member)
-- [] Toggle errand complete status (author or member) - ONLY MARKS COMPLETE
+- [x] Toggle errand complete status (author or member)
 - [x] Delete errand (author or member)
 
 ### Projects

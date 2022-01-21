@@ -274,7 +274,7 @@ errand.put("/:id/toggle", auth, async (req, res, next) => {
     // Update errand
     const newErrand = await Errand.findByIdAndUpdate(
       id,
-      { isComplete: true },
+      { isComplete: !errand.isComplete },
       { new: true }
     );
 
