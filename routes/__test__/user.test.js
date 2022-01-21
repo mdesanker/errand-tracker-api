@@ -189,7 +189,7 @@ describe("GET /api/user/:id", () => {
 ////////////////////////////////////////
 /* USER FRIEND REQUEST ROUTES */
 ////////////////////////////////////////
-describe.only("PUT /api/user/sendrequest/:id", () => {
+describe("PUT /api/user/sendrequest/:id", () => {
   it("send friend request from user to id", async () => {
     const res = await request(app)
       .put(`/api/user/sendrequest/${grettaUserId}`)
@@ -252,6 +252,52 @@ describe.only("PUT /api/user/sendrequest/:id", () => {
     const res = await request(app)
       .put(`/api/user/sendrequest/${invalidUserId}`)
       .set("x-auth-token", gregToken);
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toHaveProperty("errors");
+    expect(res.body.errors[0].msg).toEqual("Invalid user id");
+  });
+});
+
+describe.only("PUT /api/user/acceptrequest/:id", () => {
+  it("accept friend request for user id", async () => {
+    // Gretta accepting friend request from greg
+    const res = await request(app)
+      .put(`/api/user/acceptrequest/${gregUserId}`)
+      .set("x-auth-token", grettaToken);
+
+    // Check greg friend list for gretta
+    const gregRes = await request(app)
+      .get(`/api/user/${gregUserId}`)
+      .set("x-auth-token", gregToken);
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body.friends).toEqual(expect.arrayContaining([gregUserId]));
+    expect(res.body.friendRequests).toEqual(
+      expect.not.arrayContaining([gregUserId])
+    );
+    expect(gregRes.statusCode).toEqual(200);
+    expect(gregRes.body.friends).toEqual(
+      expect.arrayContaining([grettaUserId])
+    );
+  });
+
+  it("return error if no friend request", async () => {
+    // Gretta accepting friend request from greg
+    const res = await request(app)
+      .put(`/api/user/acceptrequest/${gregUserId}`)
+      .set("x-auth-token", grettaToken);
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toHaveProperty("errors");
+    expect(res.body.errors[0].msg).toEqual("No friend request from user");
+  });
+
+  it("return error for incorrect user id", async () => {
+    // Gretta accepting friend request from greg
+    const res = await request(app)
+      .put(`/api/user/acceptrequest/${invalidUserId}`)
+      .set("x-auth-token", grettaToken);
 
     expect(res.statusCode).toEqual(400);
     expect(res.body).toHaveProperty("errors");
