@@ -91,7 +91,7 @@ describe("GET /api/project/:id", () => {
 
     expect(res.statusCode).toEqual(200);
     expect(res.body).toHaveProperty("title");
-    expect(res.body.title).toEqual("Shopping List");
+    expect(res.body.title).toEqual("Solo project");
     expect(res.body).toHaveProperty("description");
   });
 
