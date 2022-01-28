@@ -41,6 +41,7 @@ const generateGregFriend = () => {
     email: "greorge@example.edu",
     password: "$2a$10$ijwz5joIBRc/.GSoOoYqtu3hxWu7AJSjlAUJapiEMunrtDe2Kme8m",
     friends: ["61e71828c9cb2005247017c7"],
+    pendingRequests: ["61e7ec186394874272d11e67"],
     _id: "61e71828d0db200524701a24",
   });
   users.push(user);

@@ -328,16 +328,25 @@ describe.only("PUT /api/user/acceptrequest/:id", () => {
   });
 });
 
-describe("PUT /api/user/declinerequest/:id", () => {
+describe.only("PUT /api/user/declinerequest/:id", () => {
   it("remove friend request from user", async () => {
     const res = await request(app)
       .put(`/api/user/declinerequest/${gregFriendUserId}`)
       .set("x-auth-token", grettaToken);
 
+    // Check greg pendingRequests
+    const gregFriendRes = await request(app)
+      .get(`/api/user/${gregFriendUserId}`)
+      .set("x-auth-token", gregToken);
+
     expect(res.statusCode).toEqual(200);
     expect(res.body).toHaveProperty("friendRequests");
     expect(res.body.friendRequests).toEqual(
       expect.not.arrayContaining([gregFriendUserId])
+    );
+    expect(gregFriendRes.statusCode).toEqual(200);
+    expect(gregFriendRes.body.pendingRequests).toEqual(
+      expect.not.arrayContaining([grettaUserId])
     );
   });
 
