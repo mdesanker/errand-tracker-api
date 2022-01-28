@@ -279,7 +279,7 @@ user.put("/acceptrequest/:id", auth, async (req, res, next) => {
     const user = await User.findById(req.user.id).populate(
       "friends friendRequests"
     );
-    const requestor = await User.findById(id);
+    const requestor = await User.findById(id).populate("pendingRequests");
 
     // Check id is valid
     if (!requestor) {
@@ -300,13 +300,13 @@ user.put("/acceptrequest/:id", auth, async (req, res, next) => {
 
     // Update requestor friend list
     const requestorFriends = requestor.friends.concat(req.user.id);
-    const requestorFriendRequests = requestor.friendRequests.filter(
+    const requestorPendingRequests = requestor.pendingRequests.filter(
       (request) => request.id !== req.user.id
     );
 
     const requestorUpdate = await User.findByIdAndUpdate(
       id,
-      { friends: requestorFriends, friendRequests: requestorFriendRequests },
+      { friends: requestorFriends, pendingRequests: requestorPendingRequests },
       { new: true }
     );
 
@@ -322,6 +322,7 @@ user.put("/acceptrequest/:id", auth, async (req, res, next) => {
       { new: true }
     );
 
+    console.log(userUpdate);
     res.json(userUpdate);
   } catch (err) {
     console.error(err.message);
