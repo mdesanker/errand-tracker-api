@@ -337,16 +337,26 @@ user.put("/declinerequest/:id", auth, async (req, res, next) => {
   const { id } = req.params;
 
   try {
-    // Check requestor id is valid
-    const requestor = await User.findById(id);
+    const requestor = await User.findById(id).populate("pendingRequests");
+    const user = await User.findById(req.user.id).populate("friendRequests");
 
+    // Check requestor id is valid
     if (!requestor) {
       return res.status(400).json({ errors: [{ msg: "Invalid user id" }] });
     }
 
-    // Remove friend request
-    const user = await User.findById(req.user.id).populate("friendRequests");
+    // Remove pendingRequest from requestor
+    const pendingRequests = requestor.pendingRequests.filter(
+      (request) => request.id !== req.user.id
+    );
 
+    const requestorUpdate = await User.findByIdAndUpdate(
+      id,
+      { pendingRequests },
+      { new: true }
+    );
+
+    // Remove friend request
     const friendRequests = user.friendRequests.filter(
       (request) => request.id !== id
     );
