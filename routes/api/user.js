@@ -142,6 +142,22 @@ user.post("/login", [
   },
 ]);
 
+// @route   GET /api/user/all
+// @desc    Get all users
+// @access  Private
+user.get("/all", auth, async (req, res, next) => {
+  console.log("Finding users...");
+  try {
+    const users = await User.find({}).sort({ username: "asc" });
+
+    console.log(users);
+    return res.json(users);
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).send("Server error");
+  }
+});
+
 // @route   GET /api/user/detail
 // @desc    Get logged in user data
 // @access  Private
