@@ -206,19 +206,23 @@ user.put("/sendrequest/:id", auth, async (req, res, next) => {
   const { id } = req.params;
 
   try {
-    // Check user id valid
-    const user = await User.findById(id).populate("friends friendRequests");
+    const requestee = await User.findById(id).populate(
+      "friends friendRequests pendingRequests"
+    );
+    const user = await User.findById(req.user.id).populate(
+      "pendingRequests friends"
+    );
 
-    if (!user) {
+    // Check user id valid
+    if (!requestee) {
       return res.status(400).json({ errors: [{ msg: "Invalid user id" }] });
     }
 
     // Check if friends
     let isFriends = false;
 
-    if (user.friends) {
-      isFriends =
-        user.friends.filter((friend) => friend.id === req.user.id).length !== 0;
+    if (user.friends.filter((friend) => friend.id === id).length !== 0) {
+      isFriends = true;
     }
 
     if (isFriends) {
@@ -228,41 +232,43 @@ user.put("/sendrequest/:id", auth, async (req, res, next) => {
     }
 
     // Check if requested
-    let isFriendRequested = false;
+    let isPending = false;
 
-    if (user.friendRequests) {
-      isFriendRequested =
-        user.friendRequests.filter((friend) => friend.id === req.user.id)
-          .length !== 0;
+    if (
+      user.pendingRequests.filter((friend) => friend.id === id).length !== 0
+    ) {
+      isPending = true;
     }
 
-    if (isFriendRequested) {
+    if (isPending) {
       return res
         .status(400)
         .json({ errors: [{ msg: "Friend request pending" }] });
     }
 
     // Send friend request
-    const friendRequests = user.friendRequests.concat(req.user.id);
+    const requesteeFriendRequests = requestee.friendRequests.concat(
+      req.user.id
+    );
 
     const updateRequestee = await User.findByIdAndUpdate(
       id,
-      { friendRequests },
+      { friendRequests: requesteeFriendRequests },
       { new: true }
     );
 
     // Update pending requests for user
-    const requestor = await User.findById(req.user.id);
+    // const requestor = await User.findById(req.user.id);
 
-    const pendingRequests = requestor.pendingRequests.concat(id);
+    const pendingRequests = user.pendingRequests.concat(id);
 
-    const updateRequestor = await User.findByIdAndUpdate(
+    const updateUser = await User.findByIdAndUpdate(
       req.user.id,
       { pendingRequests },
       { new: true }
     );
 
-    res.json(updateRequestor);
+    res.json(updateUser);
   } catch (err) {
     console.error(err.message);
     return res.status(500).send("Server error");
