@@ -152,7 +152,7 @@ user.get("/all", auth, async (req, res, next) => {
       .sort({ username: "asc" })
       .select("-password");
 
-    console.log(users);
+    // console.log(users);
     return res.json(users);
   } catch (err) {
     console.error(err.message);
@@ -165,8 +165,11 @@ user.get("/all", auth, async (req, res, next) => {
 // @access  Private
 user.get("/detail", auth, async (req, res, next) => {
   try {
-    const user = await User.findById(req.user.id).select("-password");
+    const user = await User.findById(req.user.id)
+      .select("-password")
+      .populate("friends friendRequests");
 
+    console.log(user);
     res.json(user);
   } catch (err) {
     console.error(err.message);
