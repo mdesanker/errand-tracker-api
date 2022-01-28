@@ -245,13 +245,24 @@ user.put("/sendrequest/:id", auth, async (req, res, next) => {
     // Send friend request
     const friendRequests = user.friendRequests.concat(req.user.id);
 
-    const update = await User.findByIdAndUpdate(
+    const updateRequestee = await User.findByIdAndUpdate(
       id,
       { friendRequests },
       { new: true }
     );
 
-    res.json(update);
+    // Update pending requests for user
+    const requestor = await User.findById(req.user.id);
+
+    const pendingRequests = requestor.pendingRequests.concat(id);
+
+    const updateRequestor = await User.findByIdAndUpdate(
+      req.user.id,
+      { pendingRequests },
+      { new: true }
+    );
+
+    res.json(updateRequestor);
   } catch (err) {
     console.error(err.message);
     return res.status(500).send("Server error");
