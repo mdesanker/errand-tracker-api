@@ -148,7 +148,9 @@ user.post("/login", [
 user.get("/all", auth, async (req, res, next) => {
   console.log("Finding users...");
   try {
-    const users = await User.find({}).sort({ username: "asc" });
+    const users = await User.find({})
+      .sort({ username: "asc" })
+      .select("-password");
 
     console.log(users);
     return res.json(users);
@@ -164,6 +166,7 @@ user.get("/all", auth, async (req, res, next) => {
 user.get("/detail", auth, async (req, res, next) => {
   try {
     const user = await User.findById(req.user.id).select("-password");
+
     res.json(user);
   } catch (err) {
     console.error(err.message);
@@ -179,7 +182,7 @@ user.get("/:id", auth, async (req, res, next) => {
 
   try {
     // Check user id is valid
-    const user = await User.findById(id);
+    const user = await User.findById(id).select("-password");
 
     if (!user) {
       return res.status(400).json({ errors: [{ msg: "Invalid user id" }] });
