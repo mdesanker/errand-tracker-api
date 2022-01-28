@@ -276,28 +276,21 @@ user.put("/acceptrequest/:id", auth, async (req, res, next) => {
   const { id } = req.params;
 
   try {
-    // Check id is valid
+    const user = await User.findById(req.user.id).populate(
+      "friends friendRequests"
+    );
     const requestor = await User.findById(id);
 
+    // Check id is valid
     if (!requestor) {
       return res.status(400).json({ errors: [{ msg: "Invalid user id" }] });
     }
 
-    // console.log("REQUESTOR", requestor);
-
     // Check friend request is valid
-    const user = await User.findById(req.user.id).populate(
-      "friends friendRequests"
-    );
-
-    // console.log("USER", user);
-
     isRequested = false;
 
     if (user.friendRequests.filter((request) => request.id === id).length !== 0)
       isRequested = true;
-
-    // console.log(isRequested);
 
     if (!isRequested) {
       return res

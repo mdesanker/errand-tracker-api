@@ -279,7 +279,7 @@ describe.only("PUT /api/user/sendrequest/:id", () => {
   });
 });
 
-describe("PUT /api/user/acceptrequest/:id", () => {
+describe.only("PUT /api/user/acceptrequest/:id", () => {
   it("accept friend request for user id", async () => {
     // Gretta accepting friend request from greg
     const res = await request(app)
@@ -297,6 +297,9 @@ describe("PUT /api/user/acceptrequest/:id", () => {
       expect.not.arrayContaining([gregUserId])
     );
     expect(gregRes.statusCode).toEqual(200);
+    expect(gregRes.body.pendingRequests).toEqual(
+      expect.not.arrayContaining([grettaUserId])
+    );
     expect(gregRes.body.friends).toEqual(
       expect.arrayContaining([grettaUserId])
     );
