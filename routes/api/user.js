@@ -167,7 +167,7 @@ user.get("/detail", auth, async (req, res, next) => {
   try {
     const user = await User.findById(req.user.id)
       .select("-password")
-      .populate("friends friendRequests");
+      .populate("friends friendRequests pendingRequests");
 
     console.log(user);
     res.json(user);
