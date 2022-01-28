@@ -187,6 +187,22 @@ describe("GET /api/user/:id", () => {
 });
 
 ////////////////////////////////////////
+/* USER SEARCH ROUTES */
+////////////////////////////////////////
+describe("GET /api/user/all", () => {
+  it("return list of all users", async () => {
+    const res = await request(app)
+      .get("/api/user/all")
+      .set("x-auth-token", gregToken);
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual(expect.arrayContaining([expect.anything()]));
+    expect(res.body[0]).toHaveProperty("username");
+    expect(res.body[0]).toHaveProperty("email");
+  });
+});
+
+////////////////////////////////////////
 /* USER FRIEND REQUEST ROUTES */
 ////////////////////////////////////////
 describe("PUT /api/user/sendrequest/:id", () => {
