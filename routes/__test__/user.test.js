@@ -205,7 +205,7 @@ describe("GET /api/user/all", () => {
 ////////////////////////////////////////
 /* USER FRIEND REQUEST ROUTES */
 ////////////////////////////////////////
-describe("PUT /api/user/sendrequest/:id", () => {
+describe.only("PUT /api/user/sendrequest/:id", () => {
   it("send friend request from user to id", async () => {
     const res = await request(app)
       .put(`/api/user/sendrequest/${grettaUserId}`)
@@ -217,6 +217,10 @@ describe("PUT /api/user/sendrequest/:id", () => {
       .set("x-auth-token", gregToken);
 
     expect(res.statusCode).toEqual(200);
+    expect(res.body).toHaveProperty("pendingRequests");
+    expect(res.body.pendingRequests).toEqual(
+      expect.arrayContaining([grettaUserId])
+    );
     expect(grettaRes.statusCode).toEqual(200);
     expect(grettaRes.body).toHaveProperty("friendRequests");
     expect(grettaRes.body.friendRequests).toEqual(
