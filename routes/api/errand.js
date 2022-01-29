@@ -179,30 +179,35 @@ errand.put("/:id/update", auth, [
       const { title, description, dueDate, priority, project } = req.body;
       const { id } = req.params;
 
-      // Find errand
+      // Check errand exists
       const errand = await Errand.findById(id).populate("author project");
 
       if (!errand) {
         return res.status(400).json({ errors: [{ msg: "Invalid errand id" }] });
       }
 
-      // Check user is member
+      const parentProject = await Project.findById(errand.project).populate(
+        "author members"
+      );
+
+      // Check user is errand author
+      const isErrandAuthor = req.user.id === errand.author.id;
+
+      let isProjectAuthor = false;
       let isMember = false;
 
-      if (errand.project) {
-        const parentProject = await Project.findById(
-          errand.project.id
-        ).populate("members");
+      // Errand is from a project
+      if (parentProject) {
+        // Check user is project author
+        isProjectAuthor = req.user.id === parentProject.author.id;
 
+        // Check user is project member
         isMember =
           parentProject.members.filter((member) => member.id === req.user.id)
-            .length !== 0;
+            .length > 0;
       }
 
-      // Check user is author
-      const isAuthor = req.user.id === errand.author.id;
-
-      if (!isAuthor && !isMember) {
+      if (!isErrandAuthor && !isProjectAuthor && !isMember) {
         return res
           .status(401)
           .json({ errors: [{ msg: "Invalid credentials" }] });
