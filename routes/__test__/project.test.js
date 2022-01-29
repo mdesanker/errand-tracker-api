@@ -93,11 +93,12 @@ describe("GET /api/project/author/:userid", () => {
 describe("GET /api/project/member/:id", () => {
   it("return all projects user is a member of", async () => {
     const res = await request(app)
-      .get(`/api/project/author/${grettaUserId}`)
+      .get(`/api/project/member/${grettaUserId}`)
       .set("x-auth-token", grettaToken);
 
     expect(res.statusCode).toEqual(200);
     expect(Array.isArray(res.body)).toBe(true);
+    expect(res.body[0]._id).toEqual("61e7dd93ecec03286743e04a");
   });
 
   it("return error for invalid user id", async () => {

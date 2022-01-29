@@ -64,6 +64,37 @@ project.get("/author/:userid", auth, async (req, res, next) => {
   }
 });
 
+// @route   GET /api/project/member/:userid
+// @desc    Get authored projects for user
+// @access  Private
+project.get("/member/:userid", auth, async (req, res, next) => {
+  const { userid } = req.params;
+
+  try {
+    // Check user exists
+    const user = await User.findById(userid);
+
+    if (!user) {
+      return res.status(400).json({ errors: [{ msg: "Invalid user id" }] });
+    }
+
+    // console.log(user);
+
+    //  Get projects
+    const projects = await Project.find({ members: userid })
+      .sort({
+        date: "asc",
+      })
+      .populate("members");
+
+    // console.log(projects);
+    res.json(projects);
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).send("Server error");
+  }
+});
+
 // @route   GET /api/project/:id
 // @desc    Get project by id
 // @access  Private
