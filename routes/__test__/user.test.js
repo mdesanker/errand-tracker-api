@@ -218,14 +218,10 @@ describe("PUT /api/user/sendrequest/:id", () => {
 
     expect(res.statusCode).toEqual(200);
     expect(res.body).toHaveProperty("pendingRequests");
-    expect(res.body.pendingRequests).toEqual(
-      expect.arrayContaining([grettaUserId])
-    );
+    expect(res.body.pendingRequests[0]._id).toEqual(grettaUserId);
     expect(grettaRes.statusCode).toEqual(200);
     expect(grettaRes.body).toHaveProperty("friendRequests");
-    expect(grettaRes.body.friendRequests).toEqual(
-      expect.arrayContaining([gregUserId])
-    );
+    expect(grettaRes.body.friendRequests[1]._id).toEqual(gregUserId);
   });
 
   it("error for friend request already pending", async () => {
@@ -243,9 +239,7 @@ describe("PUT /api/user/sendrequest/:id", () => {
     expect(res.body.errors[0].msg).toEqual("Friend request pending");
     expect(grettaRes.statusCode).toEqual(200);
     expect(grettaRes.body).toHaveProperty("friendRequests");
-    expect(grettaRes.body.friendRequests).toEqual(
-      expect.arrayContaining([gregUserId])
-    );
+    expect(grettaRes.body.friendRequests[1]._id).toEqual(gregUserId);
   });
 
   it("error for already friended", async () => {
@@ -263,9 +257,7 @@ describe("PUT /api/user/sendrequest/:id", () => {
     expect(res.body.errors[0].msg).toEqual("User already friended");
     expect(gregFriendRes.statusCode).toEqual(200);
     expect(gregFriendRes.body).toHaveProperty("friends");
-    expect(gregFriendRes.body.friends).toEqual(
-      expect.arrayContaining([gregUserId])
-    );
+    expect(gregFriendRes.body.friends[0]._id).toEqual(gregUserId);
   });
 
   it("error for invalid user id", async () => {
@@ -292,17 +284,13 @@ describe("PUT /api/user/acceptrequest/:id", () => {
       .set("x-auth-token", gregToken);
 
     expect(res.statusCode).toEqual(200);
-    expect(res.body.friends).toEqual(expect.arrayContaining([gregUserId]));
-    expect(res.body.friendRequests).toEqual(
-      expect.not.arrayContaining([gregUserId])
-    );
+    expect(res.body.friends[0]._id).toEqual(gregUserId);
+    expect(res.body.friendRequests[0]._id).not.toEqual(gregUserId);
     expect(gregRes.statusCode).toEqual(200);
     expect(gregRes.body.pendingRequests).toEqual(
       expect.not.arrayContaining([grettaUserId])
     );
-    expect(gregRes.body.friends).toEqual(
-      expect.arrayContaining([grettaUserId])
-    );
+    expect(gregRes.body.friends[1]._id).toEqual(grettaUserId);
   });
 
   it("return error if no friend request", async () => {

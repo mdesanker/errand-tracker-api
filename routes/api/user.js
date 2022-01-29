@@ -185,7 +185,9 @@ user.get("/:id", auth, async (req, res, next) => {
 
   try {
     // Check user id is valid
-    const user = await User.findById(id).select("-password");
+    const user = await User.findById(id)
+      .select("-password")
+      .populate("friends friendRequests pendingRequests");
 
     if (!user) {
       return res.status(400).json({ errors: [{ msg: "Invalid user id" }] });
@@ -266,8 +268,9 @@ user.put("/sendrequest/:id", auth, async (req, res, next) => {
       req.user.id,
       { pendingRequests },
       { new: true }
-    );
+    ).populate("friends friendRequests pendingRequests");
 
+    console.log(updateUser);
     res.json(updateUser);
   } catch (err) {
     console.error(err.message);
@@ -326,9 +329,9 @@ user.put("/acceptrequest/:id", auth, async (req, res, next) => {
       req.user.id,
       { friends: userFriends, friendRequests: userFriendRequests },
       { new: true }
-    );
+    ).populate("friends friendRequests pendingRequests");
 
-    console.log(userUpdate);
+    // console.log(userUpdate);
     res.json(userUpdate);
   } catch (err) {
     console.error(err.message);
@@ -371,7 +374,7 @@ user.put("/declinerequest/:id", auth, async (req, res, next) => {
       req.user.id,
       { friendRequests },
       { new: true }
-    );
+    ).populate("friends friendRequests pendingRequests");
 
     res.json(userUpdate);
   } catch (err) {
@@ -416,7 +419,7 @@ user.put("/unfriend/:id", auth, async (req, res, next) => {
       req.user.id,
       { friends: requestorFriends },
       { new: true }
-    );
+    ).populate("friends friendRequests pendingRequests");
 
     res.json(requestorUpdate);
   } catch (err) {
