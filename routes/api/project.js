@@ -88,6 +88,7 @@ project.post("/create", auth, [
   // Validate and sanitize input
   check("title", "Title is required").trim().notEmpty(),
   check("description").trim(),
+  check("members").trim(),
 
   // Process input
   async (req, res, next) => {
@@ -98,7 +99,9 @@ project.post("/create", auth, [
     }
 
     try {
-      const { title, description } = req.body;
+      const { title, description, members } = req.body;
+
+      // Check all
 
       // Create new project
       const project = new Project({

@@ -4,7 +4,7 @@
   "description": "API for app to track errands",
   "main": "app.js",
   "scripts": {
-    "test": "cross-env NODE_ENV=test jest ./routes/__test__/user.test.js --testTimeout=10000 --detectOpenHandles --forceExit",
+    "test": "cross-env NODE_ENV=test jest ./routes/__test__/project.test.js --testTimeout=10000 --detectOpenHandles --forceExit",
     "start": "nodemon app.js",
     "serverstart": "DEBUG=errand-tracker-api:* npm start"
   },
