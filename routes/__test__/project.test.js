@@ -90,6 +90,27 @@ describe("GET /api/project/author/:userid", () => {
   });
 });
 
+describe("GET /api/project/member/:id", () => {
+  it("return all projects user is a member of", async () => {
+    const res = await request(app)
+      .get(`/api/project/author/${grettaUserId}`)
+      .set("x-auth-token", grettaToken);
+
+    expect(res.statusCode).toEqual(200);
+    expect(Array.isArray(res.body)).toBe(true);
+  });
+
+  it("return error for invalid user id", async () => {
+    const res = await request(app)
+      .get(`/api/project/member/${invalidUserId}`)
+      .set("x-auth-token", grettaToken);
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toHaveProperty("errors");
+    expect(res.body.errors[0].msg).toEqual("Invalid user id");
+  });
+});
+
 describe("GET /api/project/:id", () => {
   it("return project by id", async () => {
     const res = await request(app)
