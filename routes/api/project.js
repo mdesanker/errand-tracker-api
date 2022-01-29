@@ -88,7 +88,6 @@ project.post("/create", auth, [
   // Validate and sanitize input
   check("title", "Title is required").trim().notEmpty(),
   check("description").trim(),
-  check("members").trim(),
 
   // Process input
   async (req, res, next) => {
@@ -101,13 +100,25 @@ project.post("/create", auth, [
     try {
       const { title, description, members } = req.body;
 
-      // Check all
+      // Check all members valid
+      if (members) {
+        for (let member of members) {
+          const isValid = await User.findById(member);
+
+          if (!isValid) {
+            return res
+              .status(400)
+              .json({ errors: [{ msg: "One or more member ids invalid" }] });
+          }
+        }
+      }
 
       // Create new project
       const project = new Project({
         title,
         author: req.user.id,
         description,
+        members,
       });
 
       // Save project
