@@ -54,7 +54,9 @@ describe("POST /api/project/test", () => {
   });
 });
 
-// Project GET routes
+////////////////////////////////////////
+/* PROJECT GET ROUTES */
+////////////////////////////////////////
 describe("GET /api/project/all", () => {
   it("return all projects", async () => {
     const res = await request(app)
@@ -67,10 +69,10 @@ describe("GET /api/project/all", () => {
   });
 });
 
-describe("GET /api/project/user/:userid", () => {
+describe("GET /api/project/author/:userid", () => {
   it("return all projects for specific user", async () => {
     const res = await request(app)
-      .get(`/api/project/user/${gregUserId}`)
+      .get(`/api/project/author/${gregUserId}`)
       .set("x-auth-token", gregToken);
 
     expect(res.statusCode).toEqual(200);
@@ -79,7 +81,7 @@ describe("GET /api/project/user/:userid", () => {
 
   it("return error for invalid user id", async () => {
     const res = await request(app)
-      .get(`/api/project/user/${invalidUserId}`)
+      .get(`/api/project/author/${invalidUserId}`)
       .set("x-auth-token", gregToken);
 
     expect(res.statusCode).toEqual(400);
@@ -111,7 +113,9 @@ describe("GET /api/project/:id", () => {
   });
 });
 
-// Project POST routes
+////////////////////////////////////////
+/* PROJECT POST ROUTES */
+////////////////////////////////////////
 describe("POST /api/project/create", () => {
   it("return created project", async () => {
     const res = await request(app)
@@ -163,7 +167,9 @@ describe("POST /api/project/create", () => {
   });
 });
 
-// Project PUT routes
+////////////////////////////////////////
+/* PROJECT PUT ROUTES */
+////////////////////////////////////////
 describe("PUT /api/project/:id/update", () => {
   it("return updated project", async () => {
     const res = await request(app)

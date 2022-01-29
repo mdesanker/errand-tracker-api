@@ -65,7 +65,7 @@ const generateUser = () => {
 const generateGregProject = () => {
   const project = new Project({
     title: "Solo project",
-    author: users[0]._id, // Greg owns project
+    author: "61e71828c9cb2005247017c7", // Greg owns project
     description: faker.lorem.sentence(),
     members: [], // No members
     _id: "61e7dd93ecec03286743e04e",
@@ -76,9 +76,9 @@ const generateGregProject = () => {
 const generateGregAndGrettaProject = () => {
   const project = new Project({
     title: "Shared project",
-    author: users[0]._id, // Greg owns project
+    author: "61e71828c9cb2005247017c7", // Greg owns project
     description: faker.lorem.sentence(),
-    members: [users[1]._id], // Gretta is member
+    members: ["61e7ec186394874272d11e67"], // Gretta is member
     _id: "61e7dd93ecec03286743e04a",
   });
   projects.push(project);

@@ -35,10 +35,10 @@ project.get("/all", auth, async (req, res, next) => {
   }
 });
 
-// @route   GET /api/project/user/:userid
-// @desc    Get projects for user
+// @route   GET /api/project/author/:userid
+// @desc    Get authored projects for user
 // @access  Private
-project.get("/user/:userid", auth, async (req, res, next) => {
+project.get("/author/:userid", auth, async (req, res, next) => {
   const { userid } = req.params;
 
   try {
@@ -50,10 +50,13 @@ project.get("/user/:userid", auth, async (req, res, next) => {
     }
 
     //  Get projects
-    const projects = await Project.find({ author: userid }).sort({
-      date: "asc",
-    });
+    const projects = await Project.find({ author: userid })
+      .sort({
+        date: "asc",
+      })
+      .populate("members");
 
+    // console.log(projects);
     res.json(projects);
   } catch (err) {
     console.error(err.message);
