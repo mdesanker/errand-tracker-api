@@ -68,7 +68,7 @@ project.get("/:id", auth, async (req, res, next) => {
   const { id } = req.params;
 
   try {
-    const project = await Project.findById(id);
+    const project = await Project.findById(id).populate("members");
 
     if (!project) {
       return res.status(400).json({ errors: [{ msg: "Invalid project id" }] });
