@@ -270,7 +270,7 @@ describe("PUT /api/errand/:id/toggle", () => {
     expect(res.body.isComplete).toBe(true);
   });
 
-  it("return error if not errand author", async () => {
+  it("return error if not errand author and not member", async () => {
     const res = await request(app)
       .put(`/api/errand/${errandId}/toggle`)
       .set("x-auth-token", grettaToken);
