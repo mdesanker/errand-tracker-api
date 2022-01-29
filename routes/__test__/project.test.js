@@ -11,9 +11,10 @@ const gregUserId = "61e71828c9cb2005247017c7";
 const grettaUserId = "61e7ec186394874272d11e67";
 const gregFriendUserId = "61e71828d0db200524701a24";
 const invalidUserId = "0000000000cb200524701123";
-const projectid = "61e7dd93ecec03286743e04e";
-const invalidProjectid = "00000093ecec03286743e04e";
-const errandid = "61e71a80f0f8833ac7d5201d";
+const gregProjectId = "61e7dd93ecec03286743e04e";
+const gregGrettaProjectId = "61e7dd93ecec03286743e04a";
+const invalidProjectId = "00000093ecec03286743e04e";
+const errandId = "61e71a80f0f8833ac7d5201d";
 
 ////////////////////////////////////////
 /* PREPARATION */
@@ -90,7 +91,7 @@ describe("GET /api/project/user/:userid", () => {
 describe("GET /api/project/:id", () => {
   it("return project by id", async () => {
     const res = await request(app)
-      .get(`/api/project/${projectid}`)
+      .get(`/api/project/${gregProjectId}`)
       .set("x-auth-token", gregToken);
 
     expect(res.statusCode).toEqual(200);
@@ -101,7 +102,7 @@ describe("GET /api/project/:id", () => {
 
   it("return error if incorrect project id", async () => {
     const res = await request(app)
-      .get(`/api/project/${invalidProjectid}`)
+      .get(`/api/project/${invalidProjectId}`)
       .set("x-auth-token", gregToken);
 
     expect(res.statusCode).toEqual(400);
@@ -166,7 +167,7 @@ describe("POST /api/project/create", () => {
 describe("PUT /api/project/:id/update", () => {
   it("return updated project", async () => {
     const res = await request(app)
-      .put(`/api/project/${projectid}/update`)
+      .put(`/api/project/${gregProjectId}/update`)
       .set("x-auth-token", gregToken)
       .send({
         title: "Updated project title",
@@ -180,9 +181,62 @@ describe("PUT /api/project/:id/update", () => {
     expect(res.body.description).toEqual("This project has a description");
   });
 
+  it("add member to project", async () => {
+    const res = await request(app)
+      .put(`/api/project/${gregProjectId}/update`)
+      .set("x-auth-token", gregToken)
+      .send({
+        title: "Updated project title",
+        description: "This project has a description",
+        member: [grettaUserId],
+      });
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toHaveProperty("title");
+    expect(res.body.title).toEqual("Updated project title");
+    expect(res.body).toHaveProperty("description");
+    expect(res.body.description).toEqual("This project has a description");
+    expect(res.body).toHaveProperty("members");
+    expect(res.body.members).toEqual(expect.arrayContaining([grettaUserId]));
+  });
+
+  it("no change if user already project member", async () => {
+    const res = await request(app)
+      .put(`/api/project/${gregProjectId}/update`)
+      .set("x-auth-token", gregToken)
+      .send({
+        title: "Updated project title",
+        description: "This project has a description",
+        member: [grettaUserId],
+      });
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toHaveProperty("title");
+    expect(res.body.title).toEqual("Updated project title");
+    expect(res.body).toHaveProperty("description");
+    expect(res.body.description).toEqual("This project has a description");
+    expect(res.body).toHaveProperty("members");
+    expect(res.body.members).toEqual([grettaUserId]);
+  });
+
+  it("error if invalid member id", async () => {
+    const res = await request(app)
+      .put(`/api/project/${gregProjectId}/update`)
+      .set("x-auth-token", gregToken)
+      .send({
+        title: "Updated project title",
+        description: "This project has a description",
+        member: [invalidUserId],
+      });
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toHaveProperty("errors");
+    expect(res.body.errors[0].msg).toEqual("One or more member ids invalid");
+  });
+
   it("return error for invalid project id", async () => {
     const res = await request(app)
-      .put(`/api/project/${invalidProjectid}/update`)
+      .put(`/api/project/${invalidProjectId}/update`)
       .set("x-auth-token", gregToken)
       .send({
         title: "Updated project title",
@@ -196,7 +250,7 @@ describe("PUT /api/project/:id/update", () => {
 
   it("return error for user not author", async () => {
     const res = await request(app)
-      .put(`/api/project/${projectid}/update`)
+      .put(`/api/project/${gregProjectId}/update`)
       .set("x-auth-token", grettaToken)
       .send({
         title: "Updated project title",
@@ -210,7 +264,7 @@ describe("PUT /api/project/:id/update", () => {
 
   it("return error for no title", async () => {
     const res = await request(app)
-      .put(`/api/project/${projectid}/update`)
+      .put(`/api/project/${gregProjectId}/update`)
       .set("x-auth-token", gregToken)
       .send({
         description: "This project has a description",
@@ -225,7 +279,7 @@ describe("PUT /api/project/:id/update", () => {
 describe("PUT /api/project/:id/addmember", () => {
   it("add member to project by id", async () => {
     const res = await request(app)
-      .put(`/api/project/${projectid}/addmember`)
+      .put(`/api/project/${gregProjectId}/addmember`)
       .set("x-auth-token", gregToken)
       .send({ userid: "61e7ec186394874272d11e67" });
 
@@ -238,7 +292,7 @@ describe("PUT /api/project/:id/addmember", () => {
 
   it("return error for invalid project id", async () => {
     const res = await request(app)
-      .put(`/api/project/${invalidProjectid}/addmember`)
+      .put(`/api/project/${invalidProjectId}/addmember`)
       .set("x-auth-token", gregToken)
       .send({ userid: "61e7ec186394874272d11e67" });
 
@@ -249,7 +303,7 @@ describe("PUT /api/project/:id/addmember", () => {
 
   it("return error if invited user already a member", async () => {
     const res = await request(app)
-      .put(`/api/project/${projectid}/addmember`)
+      .put(`/api/project/${gregProjectId}/addmember`)
       .set("x-auth-token", gregToken)
       .send({ userid: "61e7ec186394874272d11e67" });
 
@@ -260,7 +314,7 @@ describe("PUT /api/project/:id/addmember", () => {
 
   it("return error for if not project owner", async () => {
     const res = await request(app)
-      .put(`/api/project/${projectid}/addmember`)
+      .put(`/api/project/${gregProjectId}/addmember`)
       .set("x-auth-token", grettaToken)
       .send({ userid: "61e7ec186394874272d11e67" });
 
@@ -273,7 +327,7 @@ describe("PUT /api/project/:id/addmember", () => {
 describe("PUT /api/project/:id/removemember", () => {
   it("remove member from project by id", async () => {
     const res = await request(app)
-      .put(`/api/project/${projectid}/removemember`)
+      .put(`/api/project/${gregProjectId}/removemember`)
       .set("x-auth-token", gregToken)
       .send({ userid: "61e7ec186394874272d11e67" });
 
@@ -286,7 +340,7 @@ describe("PUT /api/project/:id/removemember", () => {
 
   it("return error for invalid project id", async () => {
     const res = await request(app)
-      .put(`/api/project/${invalidProjectid}/removemember`)
+      .put(`/api/project/${invalidProjectId}/removemember`)
       .set("x-auth-token", gregToken)
       .send({ userid: "61e7ec186394874272d11e67" });
 
@@ -297,7 +351,7 @@ describe("PUT /api/project/:id/removemember", () => {
 
   it("return error if userid not a member", async () => {
     const res = await request(app)
-      .put(`/api/project/${projectid}/removemember`)
+      .put(`/api/project/${gregProjectId}/removemember`)
       .set("x-auth-token", gregToken)
       .send({ userid: "61e7ec186394874272d11e67" });
 
@@ -308,7 +362,7 @@ describe("PUT /api/project/:id/removemember", () => {
 
   it("return error for if not project owner", async () => {
     const res = await request(app)
-      .put(`/api/project/${projectid}/removemember`)
+      .put(`/api/project/${gregProjectId}/removemember`)
       .set("x-auth-token", grettaToken)
       .send({ userid: "61e7ec186394874272d11e67" });
 
@@ -321,12 +375,12 @@ describe("PUT /api/project/:id/removemember", () => {
 describe("DELETE /api/project/:id/delete", () => {
   it("return error for invalid credentials", async () => {
     const res = await request(app)
-      .delete(`/api/project/${projectid}/delete`)
+      .delete(`/api/project/${gregProjectId}/delete`)
       .set("x-auth-token", grettaToken);
 
     // Check for deleted project
     const findProject = await request(app)
-      .get(`/api/project/${projectid}`)
+      .get(`/api/project/${gregProjectId}`)
       .set("x-auth-token", grettaToken);
 
     expect(res.statusCode).toEqual(401);
@@ -337,7 +391,7 @@ describe("DELETE /api/project/:id/delete", () => {
 
   it("return error for invalid project id", async () => {
     const res = await request(app)
-      .delete(`/api/project/${invalidProjectid}/delete`)
+      .delete(`/api/project/${invalidProjectId}/delete`)
       .set("x-auth-token", gregToken);
 
     expect(res.statusCode).toEqual(400);
@@ -347,17 +401,17 @@ describe("DELETE /api/project/:id/delete", () => {
 
   it("delete project by id", async () => {
     const res = await request(app)
-      .delete(`/api/project/${projectid}/delete`)
+      .delete(`/api/project/${gregProjectId}/delete`)
       .set("x-auth-token", gregToken);
 
     // Check for deleted project
     const findProject = await request(app)
-      .get(`/api/project/${projectid}`)
+      .get(`/api/project/${gregProjectId}`)
       .set("x-auth-token", gregToken);
 
     // Check project errands deleted
     const findErrands = await request(app)
-      .get(`/api/errand/${errandid}`)
+      .get(`/api/errand/${errandId}`)
       .set("x-auth-token", gregToken);
 
     expect(res.statusCode).toEqual(200);
