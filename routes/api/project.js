@@ -150,7 +150,18 @@ project.put("/:id/update", auth, [
 
     try {
       const { id } = req.params;
-      const { title, description } = req.body;
+      const { title, description, members } = req.body;
+
+      // Check member ids valid
+      for (let member of members) {
+        const isValid = await User.findById(member);
+
+        if (!isValid) {
+          return res
+            .status(400)
+            .json({ errors: [{ msg: "One or more member ids invalid" }] });
+        }
+      }
 
       // Check project exists
       const project = await Project.findById(id).populate("author");
@@ -172,7 +183,7 @@ project.put("/:id/update", auth, [
       const newProject = new Project({
         title,
         description,
-        members: project.members,
+        members,
         _id: id,
       });
 
