@@ -226,6 +226,7 @@ project.put("/:id/update", auth, [
         new: true,
       });
 
+      // console.log(update);
       res.json(update);
     } catch (err) {
       console.error(err.message);
@@ -233,6 +234,49 @@ project.put("/:id/update", auth, [
     }
   },
 ]);
+
+// @route   PUT /api/project/:id/removeself
+// @desc    Remove self as project member
+// @access  Private
+project.put("/:id/removeself", auth, async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    // Check project id valid
+    const project = await Project.findById(id).populate("members");
+
+    if (!project) {
+      return res.status(400).json({ errors: [{ msg: "Invalid project id" }] });
+    }
+
+    const { members } = project;
+
+    // Check user is a member
+    const isMember =
+      members.filter((member) => member.id === req.user.id).length > 0;
+
+    if (!isMember) {
+      return res
+        .status(401)
+        .json({ errors: [{ msg: "User not project member" }] });
+    }
+
+    // Remove user from project
+    const newMembers = members.filter((member) => member.id !== req.user.id);
+
+    const update = await Project.findByIdAndUpdate(
+      id,
+      { members: newMembers },
+      { new: true }
+    );
+
+    // console.log(update);
+    return res.json({ msg: "Removed from project" });
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).send("Server error");
+  }
+});
 
 // @route   PUT /api/project/:id/addmember
 // @desc    Add member to project

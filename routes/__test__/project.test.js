@@ -289,7 +289,7 @@ describe("PUT /api/project/:id/update", () => {
   });
 });
 
-describe("PUT /api/project/:id/removeself", () => {
+describe.only("PUT /api/project/:id/removeself", () => {
   it("user remove themselves as member from project", async () => {
     const res = await request(app)
       .put(`/api/project/${gregGrettaProjectId}/removeself`)
@@ -313,7 +313,7 @@ describe("PUT /api/project/:id/removeself", () => {
 
   it("return error if not project member", async () => {
     const res = await request(app)
-      .get(`/api/project/${gregGrettaProjectId}/removeself`)
+      .put(`/api/project/${gregGrettaProjectId}/removeself`)
       .set("x-auth-token", grettaToken);
 
     expect(res.statusCode).toEqual(401);
@@ -323,7 +323,7 @@ describe("PUT /api/project/:id/removeself", () => {
 
   it("return error if invalid project id", async () => {
     const res = await request(app)
-      .get(`/api/project/${invalidProjectId}/removeself`)
+      .put(`/api/project/${invalidProjectId}/removeself`)
       .set("x-auth-token", grettaToken);
 
     expect(res.statusCode).toEqual(400);
