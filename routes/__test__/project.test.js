@@ -289,6 +289,49 @@ describe("PUT /api/project/:id/update", () => {
   });
 });
 
+describe("PUT /api/project/:id/removeself", () => {
+  it("user remove themselves as member from project", async () => {
+    const res = await request(app)
+      .put(`/api/project/${gregGrettaProjectId}/removeself`)
+      .set("x-auth-token", grettaToken);
+
+    // Check gretta no longer project member
+    const projectRes = await request(app)
+      .get(`/api/project/${gregGrettaProjectId}`)
+      .set("x-auth-token", gregToken);
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toHaveProperty("msg");
+    expect(res.body.msg).toEqual("Removed from project");
+
+    expect(projectRes.statusCode).toEqual(200);
+    expect(projectRes.body).toHaveProperty("members");
+    expect(projectRes.body.members).toEqual(
+      expect.not.arrayContaining([grettaUserId])
+    );
+  });
+
+  it("return error if not project member", async () => {
+    const res = await request(app)
+      .get(`/api/project/${gregGrettaProjectId}/removeself`)
+      .set("x-auth-token", grettaToken);
+
+    expect(res.statusCode).toEqual(401);
+    expect(res.body).toHaveProperty("errors");
+    expect(res.body.errors[0].msg).toEqual("User not project member");
+  });
+
+  it("return error if invalid project id", async () => {
+    const res = await request(app)
+      .get(`/api/project/${invalidProjectId}/removeself`)
+      .set("x-auth-token", grettaToken);
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toHaveProperty("errors");
+    expect(res.body.errors[0].msg).toEqual("Invalid project id");
+  });
+});
+
 describe.skip("PUT /api/project/:id/addmember", () => {
   it("add member to project by id", async () => {
     const res = await request(app)
