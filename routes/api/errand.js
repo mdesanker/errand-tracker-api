@@ -125,7 +125,6 @@ errand.get("/user/:userid", auth, async (req, res, next) => {
       .sort({ date: "asc" })
       .populate("author");
 
-    // console.log(errands);
     return res.json(errands);
   } catch (err) {
     console.error(err.message);
@@ -162,8 +161,10 @@ errand.get("/user/:userid/all", auth, async (req, res, next) => {
       errands.push(...projectErrands);
     }
 
+    const errandsSort = errands.sort((a, b) => a.date - b.date);
+
     // console.log(errands);
-    return res.json(errands);
+    return res.json(errandsSort);
   } catch (err) {
     console.error(err.message);
     return res.status(500).send("Server error");
