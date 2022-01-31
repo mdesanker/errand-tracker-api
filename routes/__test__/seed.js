@@ -73,6 +73,17 @@ const generateGregProject = () => {
   projects.push(project);
 };
 
+const generateGrettaProject = () => {
+  const project = new Project({
+    title: "Gretta project",
+    author: "61e7ec186394874272d11e67", // Gretta owns project
+    description: faker.lorem.sentence(),
+    members: [], // No members
+    _id: "61f749e3319e79b9cd99d8b1",
+  });
+  projects.push(project);
+};
+
 const generateGregAndGrettaProject = () => {
   const project = new Project({
     title: "Shared project",
@@ -111,11 +122,34 @@ const generateGregErrand = () => {
   errands.push(errand);
 };
 
+const generateGrettaErrand = () => {
+  const errand = new Errand({
+    title: "Gretta's errand",
+    description: "This is a gretta only errand",
+    author: "61e7ec186394874272d11e67", // Gretta
+    priority: "Medium",
+    _id: "61e71a80f0f8833ac7d587a5",
+  });
+  errands.push(errand);
+};
+
+const generateGrettaProjectErrand = () => {
+  const errand = new Errand({
+    title: "Gretta's project errand",
+    description: "This is an errand in gretta's project",
+    author: "61e7ec186394874272d11e67", // Gretta
+    priority: "Low",
+    project: "61f749e3319e79b9cd99d8b1",
+    _id: "61e71a80f0f8833ac7d524o8",
+  });
+  errands.push(errand);
+};
+
 const generateGregAndGrettaErrand = () => {
   const errand = new Errand({
     title: "Greg and Gretta's errand",
     description: "Gretta can help Greg with this errand",
-    author: "61e71828c9cb2005247017c7",
+    author: "61e71828c9cb2005247017c7", // Written by greg
     priority: "Low",
     project: "61e7dd93ecec03286743e04a",
     _id: "61e71a80f0f8833ac7d5201e",
@@ -154,18 +188,21 @@ const seedDB = async () => {
 
   // Generate projects
   generateGregProject();
+  generateGrettaProject();
   generateGregAndGrettaProject();
 
   // Generate errands
   generateErrand();
   generateGregErrand();
+  generateGrettaErrand();
+  generateGrettaProjectErrand();
   generateGregAndGrettaErrand();
 
-  for (user of users) {
-    for (let i = 0; i < Math.floor(Math.random() * 3 + 1); i++) {
-      generateErrand(user._id);
-    }
-  }
+  // for (user of users) {
+  //   for (let i = 0; i < Math.floor(Math.random() * 3 + 1); i++) {
+  //     generateErrand(user._id);
+  //   }
+  // }
 
   // Save items to db
   for (user of users) {
@@ -194,7 +231,7 @@ const seedDB = async () => {
 
   // console.log(users.slice(0, 3));
   // console.log(projects);
-  // console.log(errands[0]);
+  console.log(errands);
   return { users, projects, errands };
 };
 

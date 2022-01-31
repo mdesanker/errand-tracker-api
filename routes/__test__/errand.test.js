@@ -144,6 +144,35 @@ describe("GET /api/errand/user/:userid", () => {
   });
 });
 
+describe("GET /api/errand/user/:userid/all", () => {
+  it("return all errands associated with specific user", async () => {
+    const res = await request(app)
+      .get(`/api/errand/user/${grettaUserId}/all`)
+      .set("x-auth-token", grettaToken);
+
+    expect(res.statusCode).toEqual(200);
+    expect(Array.isArray(res.body)).toBe(true);
+    expect(
+      res.body.filter((errand) => errand._id === "61e71a80f0f8833ac7d587a5")
+        .length > 0
+    ).toBe(true);
+    expect(
+      res.body.filter((errand) => errand._id === "61e71a80f0f8833ac7d524o8")
+        .length > 0
+    ).toBe(true);
+  });
+
+  it("return error for invalid userid", async () => {
+    const res = await request(app)
+      .get(`/api/errand/user/${invalidUserId}/all`)
+      .set("x-auth-token", gregToken);
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toHaveProperty("errors");
+    expect(res.body.errors[0].msg).toEqual("Invalid user id");
+  });
+});
+
 describe("GET /api/errand/project/:projectid", () => {
   it("return errands for specific project", async () => {
     const res = await request(app)

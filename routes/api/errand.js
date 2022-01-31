@@ -12,7 +12,7 @@ const Project = require("../../models/Project");
 // @desc    Test route testing
 // @access  Public
 errand.post("/test", (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   if (!req.body.username) {
     return res.status(400).json({ errors: [{ msg: "Username is required" }] });
   }
@@ -123,6 +123,7 @@ errand.get("/user/:userid", auth, async (req, res, next) => {
       .sort({ date: "asc" })
       .populate("author");
 
+    // console.log(errands);
     return res.json(errands);
   } catch (err) {
     console.error(err.message);
