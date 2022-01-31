@@ -139,8 +139,8 @@ const generateGrettaProjectErrand = () => {
     description: "This is an errand in gretta's project",
     author: "61e7ec186394874272d11e67", // Gretta
     priority: "Low",
-    project: "61f749e3319e79b9cd99d8b1",
-    _id: "61e71a80f0f8833ac7d524o8",
+    project: "61f749e3319e79b9cd99d8b1", // Gretta's project
+    _id: "61f74cb0ea97d480c9d15839",
   });
   errands.push(errand);
 };
@@ -231,7 +231,7 @@ const seedDB = async () => {
 
   // console.log(users.slice(0, 3));
   // console.log(projects);
-  console.log(errands);
+  // console.log(errands);
   return { users, projects, errands };
 };
 

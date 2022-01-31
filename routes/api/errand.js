@@ -8,6 +8,8 @@ const Errand = require("../../models/Errand");
 const User = require("../../models/User");
 const Project = require("../../models/Project");
 
+const mongoose = require("mongoose");
+
 // @route   POST /api/errand/test
 // @desc    Test route testing
 // @access  Public
@@ -122,6 +124,43 @@ errand.get("/user/:userid", auth, async (req, res, next) => {
     const errands = await Errand.find({ author: userid })
       .sort({ date: "asc" })
       .populate("author");
+
+    // console.log(errands);
+    return res.json(errands);
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).send("Server error");
+  }
+});
+
+// @route   GET /api/errand/user/:userid/all
+// @desc    Return all errands associated with specific user
+// @access  Private
+errand.get("/user/:userid/all", auth, async (req, res, next) => {
+  const { userid } = req.params;
+  console.log("userid", userid);
+
+  try {
+    // Check user exists
+    const user = await User.findById(userid);
+
+    if (!user) {
+      return res.status(400).json({ errors: [{ msg: "Invalid user id" }] });
+    }
+
+    // Get user errands not associated with project
+    const errands = await Errand.find({ author: userid, project: null });
+
+    // Get user projects
+    const projects = await Project.find({
+      $or: [{ author: userid }, { members: userid }],
+    });
+
+    // Get errands associated with all projects
+    for (let project of projects) {
+      const projectErrands = await Errand.find({ project });
+      errands.push(...projectErrands);
+    }
 
     // console.log(errands);
     return res.json(errands);

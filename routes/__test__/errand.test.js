@@ -125,8 +125,8 @@ describe("GET /api/errand/:id", () => {
 describe("GET /api/errand/user/:userid", () => {
   it("return errands for specific user", async () => {
     const res = await request(app)
-      .get(`/api/errand/user/${gregUserId}`)
-      .set("x-auth-token", gregToken);
+      .get(`/api/errand/user/${grettaUserId}`)
+      .set("x-auth-token", grettaToken);
 
     expect(res.statusCode).toEqual(200);
     expect(res.body[0]).toHaveProperty("title");
@@ -152,12 +152,19 @@ describe("GET /api/errand/user/:userid/all", () => {
 
     expect(res.statusCode).toEqual(200);
     expect(Array.isArray(res.body)).toBe(true);
+    // Gretta's errand not associated with a project
     expect(
       res.body.filter((errand) => errand._id === "61e71a80f0f8833ac7d587a5")
         .length > 0
     ).toBe(true);
+    // Gretta's errand in her own project
     expect(
-      res.body.filter((errand) => errand._id === "61e71a80f0f8833ac7d524o8")
+      res.body.filter((errand) => errand._id === "61f74cb0ea97d480c9d15839")
+        .length > 0
+    ).toBe(true);
+    // Greg's errand in a project Gretta is a member of
+    expect(
+      res.body.filter((errand) => errand._id === "61e71a80f0f8833ac7d5201e")
         .length > 0
     ).toBe(true);
   });

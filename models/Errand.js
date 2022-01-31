@@ -12,7 +12,7 @@ const ErrandSchema = new Schema({
     enum: ["None", "Low", "Medium", "High"],
     default: "None",
   },
-  project: { type: Schema.Types.ObjectId, ref: "Project" },
+  project: { type: Schema.Types.ObjectId, ref: "Project", default: null },
   isComplete: { type: Boolean, default: false },
 });
 
