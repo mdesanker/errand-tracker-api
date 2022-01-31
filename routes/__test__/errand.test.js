@@ -16,6 +16,7 @@ const invalidProjectId = "00000093ecec03286743e04e";
 const errandId = "61e71a80f0f8833ac7d52011";
 const gregErrandId = "61e71a80f0f8833ac7d5201d";
 const gregAndGrettaErrandId = "61e71a80f0f8833ac7d5201e";
+const grettaAndGregErrandId = "61e71a80f0f8833ac7d577aa";
 const invalidErrandId = "00000080f0f8833ac7d5201d";
 
 ////////////////////////////////////////
@@ -276,7 +277,7 @@ describe("PUT /api/errand/:id/update", () => {
 });
 
 describe("PUT /api/errand/:id/toggle", () => {
-  it("toggle isComplete to true if false", async () => {
+  it("allow errand author to toggle isComplete", async () => {
     const res = await request(app)
       .put(`/api/errand/${gregErrandId}/toggle`)
       .set("x-auth-token", gregToken);
@@ -296,7 +297,17 @@ describe("PUT /api/errand/:id/toggle", () => {
     expect(res.body.isComplete).toBe(false);
   });
 
-  it("allow project member to toggle isComplete", async () => {
+  it("allow project author to toggle isComplete for member errand", async () => {
+    const res = await request(app)
+      .put(`/api/errand/${grettaAndGregErrandId}/toggle`)
+      .set("x-auth-token", gregToken);
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toHaveProperty("isComplete");
+    expect(res.body.isComplete).toBe(true);
+  });
+
+  it("allow project member to toggle isComplete for project author errand", async () => {
     const res = await request(app)
       .put(`/api/errand/${gregAndGrettaErrandId}/toggle`)
       .set("x-auth-token", grettaToken);

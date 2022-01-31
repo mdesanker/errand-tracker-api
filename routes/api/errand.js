@@ -304,7 +304,7 @@ errand.put("/:id/toggle", auth, async (req, res, next) => {
     const isErrandAuthor = req.user.id === errand.author.id;
 
     let isProjectAuthor = false;
-    let isMember = false;
+    let isProjectMember = false;
 
     // Errand is from a project
     if (parentProject) {
@@ -312,12 +312,12 @@ errand.put("/:id/toggle", auth, async (req, res, next) => {
       isProjectAuthor = req.user.id === parentProject.author.id;
 
       // Check user is project member
-      isMember =
+      isProjectMember =
         parentProject.members.filter((member) => member.id === req.user.id)
           .length > 0;
     }
 
-    if (!isErrandAuthor && !isProjectAuthor && !isMember) {
+    if (!isErrandAuthor && !isProjectAuthor && !isProjectMember) {
       return res.status(401).json({ errors: [{ msg: "Invalid credentials" }] });
     }
 
@@ -357,7 +357,7 @@ errand.delete("/:id/delete", auth, async (req, res, next) => {
     const isErrandAuthor = req.user.id === errand.author.id;
 
     let isProjectAuthor = false;
-    let isMember = false;
+    let isProjectMember = false;
 
     // Errand is from a project
     if (parentProject) {
@@ -365,12 +365,12 @@ errand.delete("/:id/delete", auth, async (req, res, next) => {
       isProjectAuthor = req.user.id === parentProject.author.id;
 
       // Check user is project member
-      isMember =
+      isProjectMember =
         parentProject.members.filter((member) => member.id === req.user.id)
           .length > 0;
     }
 
-    if (!isErrandAuthor && !isProjectAuthor && !isMember) {
+    if (!isErrandAuthor && !isProjectAuthor && !isProjectMember) {
       return res.status(401).json({ errors: [{ msg: "Invalid credentials" }] });
     }
 

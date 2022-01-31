@@ -87,7 +87,7 @@ const generateGrettaProject = () => {
 const generateGregAndGrettaProject = () => {
   const project = new Project({
     title: "Shared project",
-    author: "61e71828c9cb2005247017c7", // Greg owns project
+    author: "61e71828c9cb2005247017c7", // Greg's project
     description: faker.lorem.sentence(),
     members: ["61e7ec186394874272d11e67"], // Gretta is member
     _id: "61e7dd93ecec03286743e04a",
@@ -151,8 +151,20 @@ const generateGregAndGrettaErrand = () => {
     description: "Gretta can help Greg with this errand",
     author: "61e71828c9cb2005247017c7", // Written by greg
     priority: "Low",
-    project: "61e7dd93ecec03286743e04a",
+    project: "61e7dd93ecec03286743e04a", // Greg's project with Gretta as member
     _id: "61e71a80f0f8833ac7d5201e",
+  });
+  errands.push(errand);
+};
+
+const generateGrettaAndGregErrand = () => {
+  const errand = new Errand({
+    title: "Gretta's errand in Greg's Project",
+    description: "Greg can help Gretta with this errand",
+    author: "61e7ec186394874272d11e67", // Written by gretta
+    priority: "Medium",
+    project: "61e7dd93ecec03286743e04a", // Greg's project with Gretta as member
+    _id: "61e71a80f0f8833ac7d577aa",
   });
   errands.push(errand);
 };
@@ -197,6 +209,7 @@ const seedDB = async () => {
   generateGrettaErrand();
   generateGrettaProjectErrand();
   generateGregAndGrettaErrand();
+  generateGrettaAndGregErrand();
 
   // for (user of users) {
   //   for (let i = 0; i < Math.floor(Math.random() * 3 + 1); i++) {
