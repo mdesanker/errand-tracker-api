@@ -43,7 +43,7 @@ errand.post("/create", auth, [
     }
 
     try {
-      const { title, description, dueDate, priority, project } = req.body;
+      const { title, dueDate, priority, project } = req.body;
 
       // Create new errand object
       const errand = new Errand({
@@ -57,10 +57,12 @@ errand.post("/create", auth, [
       if (project) errand.project = project;
 
       // Save errand to db
-      await errand.save();
+      const newErrand = await errand.save();
 
-      // console.log(errand);
-      res.json(errand);
+      // Populate author and project
+      await Errand.populate(newErrand, { path: "author project" });
+
+      res.json(newErrand);
     } catch (err) {
       console.error(err.message);
       return res.status(500).send("Server error");
