@@ -328,7 +328,7 @@ errand.put("/:id/toggle", auth, async (req, res, next) => {
       id,
       { isComplete: !errand.isComplete },
       { new: true }
-    );
+    ).populate("author project");
 
     res.json(newErrand);
   } catch (err) {
