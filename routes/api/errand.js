@@ -27,7 +27,6 @@ errand.post("/test", (req, res) => {
 errand.post("/create", auth, [
   // Validate and sanitize input
   check("title", "Title is required").trim().notEmpty(),
-  check("description").trim(),
   check("dueDate").trim(),
   check("priority").trim(),
   check("project").trim(),
@@ -50,7 +49,6 @@ errand.post("/create", auth, [
       const errand = new Errand({
         title,
         author: req.user.id,
-        description,
       });
 
       // Attach optionals to errand
@@ -203,7 +201,6 @@ errand.get("/project/:projectid", async (req, res, next) => {
 errand.put("/:id/update", auth, [
   // Validate and sanitize input
   check("title", "Title is required").trim().notEmpty(),
-  check("description").trim(),
   check("dueDate").trim(),
   check("priority").trim(),
   check("project").trim(),
@@ -258,7 +255,6 @@ errand.put("/:id/update", auth, [
       const newErrand = new Errand({
         title,
         author: req.user.id,
-        description,
         dueDate,
         priority,
         project,

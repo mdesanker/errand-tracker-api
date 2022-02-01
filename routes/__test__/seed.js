@@ -102,7 +102,6 @@ const generateGregAndGrettaProject = () => {
 const generateErrand = () => {
   const errand = new Errand({
     title: "Standalone errand",
-    description: "This errand is not associated with a project",
     author: "61e71828c9cb2005247017c7",
     priority: "Medium",
     _id: "61e71a80f0f8833ac7d52011",
@@ -113,7 +112,6 @@ const generateErrand = () => {
 const generateGregErrand = () => {
   const errand = new Errand({
     title: "Greg's errand",
-    description: "This is a greg only errand",
     author: "61e71828c9cb2005247017c7",
     priority: "High",
     project: "61e7dd93ecec03286743e04e",
@@ -125,7 +123,6 @@ const generateGregErrand = () => {
 const generateGrettaErrand = () => {
   const errand = new Errand({
     title: "Gretta's errand",
-    description: "This is a gretta only errand",
     author: "61e7ec186394874272d11e67", // Gretta
     priority: "Medium",
     _id: "61e71a80f0f8833ac7d587a5",
@@ -136,7 +133,6 @@ const generateGrettaErrand = () => {
 const generateGrettaProjectErrand = () => {
   const errand = new Errand({
     title: "Gretta's project errand",
-    description: "This is an errand in gretta's project",
     author: "61e7ec186394874272d11e67", // Gretta
     priority: "Low",
     project: "61f749e3319e79b9cd99d8b1", // Gretta's project
@@ -148,7 +144,6 @@ const generateGrettaProjectErrand = () => {
 const generateGregAndGrettaErrand = () => {
   const errand = new Errand({
     title: "Greg and Gretta's errand",
-    description: "Gretta can help Greg with this errand",
     author: "61e71828c9cb2005247017c7", // Written by greg
     priority: "Low",
     project: "61e7dd93ecec03286743e04a", // Greg's project with Gretta as member
@@ -160,7 +155,6 @@ const generateGregAndGrettaErrand = () => {
 const generateGrettaAndGregErrand = () => {
   const errand = new Errand({
     title: "Gretta's errand in Greg's Project",
-    description: "Greg can help Gretta with this errand",
     author: "61e7ec186394874272d11e67", // Written by gretta
     priority: "Medium",
     project: "61e7dd93ecec03286743e04a", // Greg's project with Gretta as member
@@ -177,7 +171,6 @@ const generateIdErrand = (authorId) => {
 
   const errand = new Errand({
     title: faker.lorem.words(2),
-    description: faker.lorem.sentence(),
     author: authorId,
     priority: priorities[random],
   });

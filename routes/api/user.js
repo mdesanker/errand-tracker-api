@@ -169,7 +169,7 @@ user.get("/detail", auth, async (req, res, next) => {
       .select("-password")
       .populate("friends friendRequests pendingRequests");
 
-    console.log(user);
+    console.log("USER FETCHED", user);
     res.json(user);
   } catch (err) {
     console.error(err.message);

@@ -210,7 +210,6 @@ describe("PUT /api/errand/:id/update", () => {
   it("author update specific errand", async () => {
     const newErrand = {
       title: "New title",
-      description: "This is an updated description",
     };
 
     const res = await request(app)
@@ -222,13 +221,11 @@ describe("PUT /api/errand/:id/update", () => {
     expect(res.body).toHaveProperty("title");
     expect(res.body.title).toEqual("New title");
     expect(res.body).toHaveProperty("author");
-    expect(res.body.description).toEqual("This is an updated description");
   });
 
   it("project member update errand", async () => {
     const newErrand = {
       title: "New title",
-      description: "This is an updated description",
     };
 
     const res = await request(app)
@@ -240,13 +237,11 @@ describe("PUT /api/errand/:id/update", () => {
     expect(res.body).toHaveProperty("title");
     expect(res.body.title).toEqual("New title");
     expect(res.body).toHaveProperty("author");
-    expect(res.body.description).toEqual("This is an updated description");
   });
 
   it("error if user not author or project member", async () => {
     const newErrand = {
       title: "New title",
-      description: "This is an updated description",
     };
 
     const res = await request(app)
@@ -262,7 +257,6 @@ describe("PUT /api/errand/:id/update", () => {
   it("error if errand not found", async () => {
     const newErrand = {
       title: "New title",
-      description: "This is an updated description",
     };
 
     const res = await request(app)
