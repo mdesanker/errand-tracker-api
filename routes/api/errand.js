@@ -121,7 +121,7 @@ errand.get("/user/:userid", auth, async (req, res, next) => {
     // Find user's errands
     const errands = await Errand.find({ author: userid })
       .sort({ date: "asc" })
-      .populate("author");
+      .populate("author project");
 
     return res.json(errands);
   } catch (err) {
@@ -146,7 +146,10 @@ errand.get("/user/:userid/all", auth, async (req, res, next) => {
     }
 
     // Get user errands not associated with project
-    const errands = await Errand.find({ author: userid, project: null });
+    const errands = await Errand.find({
+      author: userid,
+      project: null,
+    }).populate("author project");
 
     // Get user projects
     const projects = await Project.find({
@@ -155,7 +158,9 @@ errand.get("/user/:userid/all", auth, async (req, res, next) => {
 
     // Get errands associated with all projects
     for (let project of projects) {
-      const projectErrands = await Errand.find({ project });
+      const projectErrands = await Errand.find({ project }).populate(
+        "author project"
+      );
       errands.push(...projectErrands);
     }
 
