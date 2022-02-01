@@ -54,7 +54,7 @@ project.get("/author/:userid", auth, async (req, res, next) => {
       .sort({
         date: "asc",
       })
-      .populate("members");
+      .populate("author members");
 
     // console.log(projects);
     res.json(projects);
@@ -85,7 +85,7 @@ project.get("/member/:userid", auth, async (req, res, next) => {
       .sort({
         date: "asc",
       })
-      .populate("members");
+      .populate("author members");
 
     // console.log(projects);
     res.json(projects);
@@ -102,7 +102,7 @@ project.get("/:id", auth, async (req, res, next) => {
   const { id } = req.params;
 
   try {
-    const project = await Project.findById(id).populate("members");
+    const project = await Project.findById(id).populate("author members");
 
     if (!project) {
       return res.status(400).json({ errors: [{ msg: "Invalid project id" }] });
@@ -157,7 +157,7 @@ project.post("/create", auth, [
       const newProject = await project.save();
 
       // Populate members in new project
-      await Project.populate(newProject, { path: "members" });
+      await Project.populate(newProject, { path: "author members" });
 
       console.log(newProject);
       res.json(newProject);
@@ -224,7 +224,7 @@ project.put("/:id/update", auth, [
       // Update project
       const update = await Project.findByIdAndUpdate(id, newProject, {
         new: true,
-      }).populate("members");
+      }).populate("author members");
 
       // console.log(update);
       res.json(update);
