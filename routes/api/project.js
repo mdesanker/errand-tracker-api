@@ -159,7 +159,7 @@ project.post("/create", auth, [
       // Populate members in new project
       await Project.populate(newProject, { path: "author members" });
 
-      console.log(newProject);
+      // console.log(newProject);
       res.json(newProject);
     } catch (err) {
       console.error(err.message);

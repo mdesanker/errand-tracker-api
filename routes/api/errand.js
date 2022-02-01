@@ -137,7 +137,7 @@ errand.get("/user/:userid", auth, async (req, res, next) => {
 // @access  Private
 errand.get("/user/:userid/all", auth, async (req, res, next) => {
   const { userid } = req.params;
-  console.log("userid", userid);
+  // console.log("userid", userid);
 
   try {
     // Check user exists

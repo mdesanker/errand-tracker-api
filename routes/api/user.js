@@ -146,7 +146,6 @@ user.post("/login", [
 // @desc    Get all users
 // @access  Private
 user.get("/all", auth, async (req, res, next) => {
-  console.log("Finding users...");
   try {
     const users = await User.find({})
       .sort({ username: "asc" })
@@ -169,7 +168,6 @@ user.get("/detail", auth, async (req, res, next) => {
       .select("-password")
       .populate("friends friendRequests pendingRequests");
 
-    console.log("USER FETCHED", user);
     res.json(user);
   } catch (err) {
     console.error(err.message);
@@ -270,7 +268,7 @@ user.put("/sendrequest/:id", auth, async (req, res, next) => {
       { new: true }
     ).populate("friends friendRequests pendingRequests");
 
-    console.log(updateUser);
+    // console.log(updateUser);
     res.json(updateUser);
   } catch (err) {
     console.error(err.message);
