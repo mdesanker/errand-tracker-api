@@ -66,7 +66,6 @@ const generateGregProject = () => {
   const project = new Project({
     title: "Solo project",
     author: "61e71828c9cb2005247017c7", // Greg owns project
-    description: faker.lorem.sentence(),
     members: [], // No members
     _id: "61e7dd93ecec03286743e04e",
   });
@@ -77,7 +76,6 @@ const generateGrettaProject = () => {
   const project = new Project({
     title: "Gretta project",
     author: "61e7ec186394874272d11e67", // Gretta owns project
-    description: faker.lorem.sentence(),
     members: [], // No members
     _id: "61f749e3319e79b9cd99d8b1",
   });
@@ -88,7 +86,6 @@ const generateGregAndGrettaProject = () => {
   const project = new Project({
     title: "Shared project",
     author: "61e71828c9cb2005247017c7", // Greg's project
-    description: faker.lorem.sentence(),
     members: ["61e7ec186394874272d11e67"], // Gretta is member
     _id: "61e7dd93ecec03286743e04a",
   });

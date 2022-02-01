@@ -121,7 +121,6 @@ project.get("/:id", auth, async (req, res, next) => {
 project.post("/create", auth, [
   // Validate and sanitize input
   check("title", "Title is required").trim().notEmpty(),
-  check("description").trim(),
 
   // Process input
   async (req, res, next) => {
@@ -132,7 +131,7 @@ project.post("/create", auth, [
     }
 
     try {
-      const { title, description, members } = req.body;
+      const { title, members } = req.body;
 
       // Check all members valid
       if (members) {
@@ -151,7 +150,6 @@ project.post("/create", auth, [
       const project = new Project({
         title,
         author: req.user.id,
-        description,
         members,
       });
 
@@ -172,7 +170,6 @@ project.post("/create", auth, [
 project.put("/:id/update", auth, [
   // Validate and sanitize input
   check("title", "Title is required").trim().notEmpty(),
-  check("description").trim(),
 
   // Process input
   async (req, res, next) => {
@@ -184,7 +181,7 @@ project.put("/:id/update", auth, [
 
     try {
       const { id } = req.params;
-      const { title, description, members } = req.body;
+      const { title, members } = req.body;
 
       // Check member ids valid
       for (let member of members) {
@@ -216,7 +213,6 @@ project.put("/:id/update", auth, [
       // Create new project
       const newProject = new Project({
         title,
-        description,
         members,
         _id: id,
       });

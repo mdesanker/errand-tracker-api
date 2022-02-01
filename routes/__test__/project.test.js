@@ -121,7 +121,6 @@ describe("GET /api/project/:id", () => {
     expect(res.statusCode).toEqual(200);
     expect(res.body).toHaveProperty("title");
     expect(res.body.title).toEqual("Solo project");
-    expect(res.body).toHaveProperty("description");
   });
 
   it("return error if incorrect project id", async () => {
@@ -199,15 +198,12 @@ describe("PUT /api/project/:id/update", () => {
       .set("x-auth-token", gregToken)
       .send({
         title: "Updated project title",
-        description: "This project has a description",
         members: [],
       });
 
     expect(res.statusCode).toEqual(200);
     expect(res.body).toHaveProperty("title");
     expect(res.body.title).toEqual("Updated project title");
-    expect(res.body).toHaveProperty("description");
-    expect(res.body.description).toEqual("This project has a description");
   });
 
   it("add member to project", async () => {
@@ -216,15 +212,12 @@ describe("PUT /api/project/:id/update", () => {
       .set("x-auth-token", gregToken)
       .send({
         title: "Updated project title",
-        description: "This project has a description",
         members: [grettaUserId],
       });
 
     expect(res.statusCode).toEqual(200);
     expect(res.body).toHaveProperty("title");
     expect(res.body.title).toEqual("Updated project title");
-    expect(res.body).toHaveProperty("description");
-    expect(res.body.description).toEqual("This project has a description");
     expect(res.body).toHaveProperty("members");
     expect(res.body.members).toEqual(expect.arrayContaining([grettaUserId]));
   });
@@ -235,7 +228,6 @@ describe("PUT /api/project/:id/update", () => {
       .set("x-auth-token", gregToken)
       .send({
         title: "Updated project title",
-        description: "This project has a description",
         members: [invalidUserId],
       });
 
@@ -250,7 +242,6 @@ describe("PUT /api/project/:id/update", () => {
       .set("x-auth-token", gregToken)
       .send({
         title: "Updated project title",
-        description: "This project has a description",
         members: [],
       });
 
@@ -265,7 +256,6 @@ describe("PUT /api/project/:id/update", () => {
       .set("x-auth-token", grettaToken)
       .send({
         title: "Updated project title",
-        description: "This project has a description",
         members: [],
       });
 
@@ -279,7 +269,6 @@ describe("PUT /api/project/:id/update", () => {
       .put(`/api/project/${gregProjectId}/update`)
       .set("x-auth-token", gregToken)
       .send({
-        description: "This project has a description",
         members: [],
       });
 
@@ -289,7 +278,7 @@ describe("PUT /api/project/:id/update", () => {
   });
 });
 
-describe.only("PUT /api/project/:id/removeself", () => {
+describe("PUT /api/project/:id/removeself", () => {
   it("user remove themselves as member from project", async () => {
     const res = await request(app)
       .put(`/api/project/${gregGrettaProjectId}/removeself`)
