@@ -102,7 +102,7 @@ project.get("/:id", auth, async (req, res, next) => {
   const { id } = req.params;
 
   try {
-    const project = await Project.findById(id);
+    const project = await Project.findById(id).populate("members");
 
     if (!project) {
       return res.status(400).json({ errors: [{ msg: "Invalid project id" }] });
@@ -220,7 +220,7 @@ project.put("/:id/update", auth, [
       // Update project
       const update = await Project.findByIdAndUpdate(id, newProject, {
         new: true,
-      });
+      }).populate("members");
 
       // console.log(update);
       res.json(update);
