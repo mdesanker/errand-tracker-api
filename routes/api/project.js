@@ -154,9 +154,11 @@ project.post("/create", auth, [
       });
 
       // Save project
-      await project.save();
+      const newProject = await project.save();
 
-      res.json(project);
+      await Project.populate(newProject, { path: "members" });
+
+      res.json(newProject);
     } catch (err) {
       console.error(err.message);
       return res.status(500).send("Server error");
