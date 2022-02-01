@@ -156,8 +156,10 @@ project.post("/create", auth, [
       // Save project
       const newProject = await project.save();
 
+      // Populate members in new project
       await Project.populate(newProject, { path: "members" });
 
+      console.log(newProject);
       res.json(newProject);
     } catch (err) {
       console.error(err.message);

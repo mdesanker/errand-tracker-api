@@ -162,7 +162,7 @@ describe("POST /api/project/create", () => {
     expect(res.body.title).toEqual("Project title");
     expect(res.body).toHaveProperty("author");
     expect(res.body).toHaveProperty("members");
-    expect(res.body.members).toEqual(expect.arrayContaining([grettaUserId]));
+    expect(res.body.members[0]._id).toEqual(grettaUserId);
   });
 
   it("return error for invalid member id", async () => {
@@ -219,7 +219,7 @@ describe("PUT /api/project/:id/update", () => {
     expect(res.body).toHaveProperty("title");
     expect(res.body.title).toEqual("Updated project title");
     expect(res.body).toHaveProperty("members");
-    expect(res.body.members).toEqual(expect.arrayContaining([grettaUserId]));
+    expect(res.body.members[0]._id).toEqual(grettaUserId);
   });
 
   it("error if invalid member id", async () => {
