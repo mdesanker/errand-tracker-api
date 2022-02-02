@@ -15,7 +15,7 @@ connectDB();
 
 app.use(
   cors({
-    origin: [/\localhost/, "https://mdesanker.github.io"],
+    origin: [/\localhost/, /\mdesanker.github.io/],
     credentials: true,
   })
 );
