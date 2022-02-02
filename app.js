@@ -28,6 +28,10 @@ app.use("/api/user", userRouter);
 app.use("/api/errand", errandRouter);
 app.use("/api/project", projectRouter);
 
+app.get("/", async (req, res) =>
+  res.json({ msg: "The Errand Tracker App API" })
+);
+
 const PORT = process.env.PORT || 8000;
 
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
