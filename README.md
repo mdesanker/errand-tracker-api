@@ -1,8 +1,24 @@
-# Errand App API
+# Errand Tracker App API
 
-This is a REST API for an errand tracking app. It allows users to create errands, organize errands into projects, and share projects with friends. This API features user authentication with jsonwebtoken, password hashing with bcryptjs, and monster avatars with gravatar.
+An errand tracking app where you can share lists with friends.
 
-Users can create errands with title, description, due date, priority, project, and completion attributes. Projects can be created with title, description, and member attributes.A user can only edit an errand if they are the author, or are a member of the project the errand is assigned to. Members cannot modify the parent project themselves.
+The [Errand Tracker App](https://mdesanker.github.io/errand-tracker-frontend)
+
+## Table of Contents
+
+- [Description](#Description)
+- [Motivation](#Motivation)
+- [How to set up locally](#How-to-set-up-locally)
+- [Built with](#Built-with)
+- [Endpoint checklist](#Endpoint-checklist)
+- [Lessons learned](#Lessons-learned)
+- [Links](#Links)
+
+## Description
+
+This the API for the [Errand Tracking App](https://github.com/mdesanker/errand-tracker-frontend).
+
+This errand tracking app allows users to create errands with titles, due dates, and priorities. Errand completion status is toggled by clicking or pressing (mobile) the errand. Errands can be added to projects, which can be shared with and updated by friends.
 
 ## How to set up locally
 
@@ -17,8 +33,8 @@ Running this API locally will require you to create a .env file in the root dire
 
 ```bash
 PORT={{server port}}
-DB_URI={{database URI}}
-KEY={{jwt key}}
+DB_URI={{MongoDB URI}}
+KEY={{JWT key}}
 ```
 
 To run all tests, remove the path. To run tests for a specific file, modify path in `test` script with desired fileName:
@@ -33,12 +49,13 @@ npm test
 
 ## Built with
 
-- NodeJS/Express
+- NodeJS
+- ExpressJS
 - JWT Authentication
 - MongoDB/Mongoose
 - supertest
 
-### To implement:
+## Endpoint checklist:
 
 **Users**
 
@@ -70,3 +87,13 @@ npm test
 - [x] Add member to project
 - [x] Remove member from project
 - [x] Delete project (deletes all associated errands)
+
+## Lessons learned
+
+- The importance of planning - I started this project with only a rough idea of what I wanted to be able to do with the app, and what the model schemas should include, and then started coding. I could have saved a lot of time and effort by not writing endpoints that I ended up not using in the frontend.
+
+- Test driven development of the REST API using the supertest library makes writing endpoints much more efficient.
+
+## Links
+
+- [Frontend repository](https://github.com/mdesanker/errand-tracker-frontend)
