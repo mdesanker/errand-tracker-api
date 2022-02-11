@@ -7,7 +7,7 @@
   },
   "main": "app.js",
   "scripts": {
-    "test": "cross-env NODE_ENV=test jest ./routes/__test__/project.test.js --testTimeout=10000 --detectOpenHandles --forceExit",
+    "test": "cross-env NODE_ENV=test jest ./routes/__test__/errand.test.js --testTimeout=10000 --detectOpenHandles --forceExit",
     "start": "node app.js",
     "dev": "nodemon app.js",
     "serverstart": "DEBUG=errand-tracker-api:* npm start"
