@@ -10,8 +10,7 @@ The [Errand Tracker App](https://mdesanker.github.io/errand-tracker-frontend)
 - [Motivation](#Motivation)
 - [How to set up locally](#How-to-set-up-locally)
 - [Built with](#Built-with)
-- [Endpoint checklist](#Endpoint-checklist)
-- [Lessons learned](#Lessons-learned)
+- [Challenges](#Challenges)
 - [Links](#Links)
 
 ## Description
@@ -19,6 +18,12 @@ The [Errand Tracker App](https://mdesanker.github.io/errand-tracker-frontend)
 This the API for the [Errand Tracking App](https://github.com/mdesanker/errand-tracker-frontend).
 
 This errand tracking app allows users to create errands with titles, due dates, and priorities. Errand completion status is toggled by clicking or pressing (mobile) the errand. Errands can be added to projects, which can be shared with and updated by friends.
+
+## Motivation
+
+This app was created to facilitate errand sharing with my partner. After the birth of our daughter, the number of errands we need to do has increased, while my ability to keep track of lists has decreased.
+
+Using a shared project on this app, we can keep each other updated in real time on what needs to be bought and where.
 
 ## How to set up locally
 
@@ -55,44 +60,9 @@ npm test
 - MongoDB/Mongoose
 - supertest
 
-## Endpoint checklist:
-
-**Users**
-
-- [x] Register account
-- [x] Login
-- [x] Send friend request
-- [x] Accept friend request
-- [x] Decline friend request
-- [x] Unfriend
-
-**Errands**
-
-- [x] Get all errands
-- [x] Get errands for user
-- [x] Get errands for project
-- [x] Get errand by id
-- [x] Create errand
-- [x] Update errand (author or member)
-- [x] Toggle errand complete status (author or member)
-- [x] Delete errand (author or member)
-
-**Projects**
-
-- [x] Get all projects
-- [x] Get all projects for user
-- [x] Get project by id
-- [x] Create project
-- [x] Update project title/description
-- [x] Add member to project
-- [x] Remove member from project
-- [x] Delete project (deletes all associated errands)
-
-## Lessons learned
+## Challenges
 
 - The importance of planning - I started this project with only a rough idea of what I wanted to be able to do with the app, and what the model schemas should include, and then started coding. I could have saved a lot of time and effort by not writing endpoints that I ended up not using in the frontend.
-
-- Test driven development of the REST API using the supertest library makes writing endpoints much more efficient.
 
 ## Links
 
